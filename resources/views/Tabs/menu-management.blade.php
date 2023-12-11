@@ -6,10 +6,17 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h5 class="m-0 font-weight-bold text-primary">Menu List</h6>
-        <button class="btn btn-primary" data-mode="add-menu" data-toggle="modal" data-target="#addEditMenuModal">
-            <i class="fas fa-plus me-2"></i>
-            Add Menu
-        </button>
+
+        <div>
+            <button class="btn btn-info" data-mode="add-menu" data-toggle="modal" data-target="#viewCategoriesModal">
+                View Categories
+            </button>
+    
+            <button class="btn btn-primary" data-mode="add-menu" data-toggle="modal" data-target="#addEditMenuModal">
+                <i class="fas fa-plus me-2"></i>
+                Add Menu
+            </button>
+        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -109,6 +116,117 @@
                     <a class="btn btn-primary" href="#">Update</a>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- View Categories Modal -->
+<div class="modal fade" id="viewCategoriesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Menu</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 font-weight-bold text-primary">Category List</h6>
+            
+                    <div>
+                        <button class="btn btn-primary" data-mode="add-category" data-toggle="modal" data-target="#addEditCategoryModal">
+                            <i class="fas fa-plus me-2"></i>
+                            Add Category
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th class="w-25">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Table 1</td>
+                                <td>
+                                    <a href="#" class="btn btn-info btn-circle" data-toggle="modal" data-mode="edit-category" data-target="#addEditCategoryModal">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+    
+                                    <a href="#" class="btn btn-danger btn-circle" data-toggle="modal" data-target="#deleteMenuModal">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        
+                            <tr>
+                                <td>Table 1</td>
+                                <td>
+                                    <a href="#" class="btn btn-info btn-circle" data-toggle="modal" data-mode="edit-category" data-target="#addEditCategoryModal">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+    
+                                    <a href="#" class="btn btn-danger btn-circle" data-toggle="modal" data-target="#deleteMenuModal">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Table 1</td>
+                                <td>
+                                    <a href="#" class="btn btn-info btn-circle" data-toggle="modal" data-mode="edit-category" data-target="#addEditCategoryModal">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+    
+                                    <a href="#" class="btn btn-danger btn-circle" data-toggle="modal" data-target="#deleteMenuModal">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Category Modal -->
+<div class="modal fade" id="addEditCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <form>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="tableName" class="mb-0">Menu Name</label>
+                        <input type="text" class="form-control" name="menuName"
+                            placeholder="">                                       
+                    </div>     
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="#">Update</a>
+                </div>
+
         </div>
     </div>
 </div>

@@ -20,7 +20,7 @@
                 <div class="container-fluid">
 
                     <!-- Content -->
-                    @include('tabs.bill-management')
+                    @include('tabs.menu-management')
 
                 </div>
                 <!-- /.container-fluid -->
