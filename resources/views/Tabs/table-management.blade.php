@@ -6,7 +6,10 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h5 class="m-0 font-weight-bold text-primary">Table List</h6>
-        <button class="btn btn-primary" data-mode="add-table" data-toggle="modal" data-target="#addEditTableModal">Add Table</button>
+        <button class="btn btn-primary" data-mode="add-table" data-toggle="modal" data-target="#addEditTableModal">
+            <i class="fas fa-plus me-2"></i>
+            Add Table
+        </button>
     </div>
     <div class="card-body">
         <div class="table-responsive">
