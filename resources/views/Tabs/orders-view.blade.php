@@ -15,7 +15,7 @@
 
     <div class="card-body">
         <!-- Order Container -->
-        <div class="card mb-4 w-auto" style="width: 250px !important">
+        <div class="card mb-4 w-auto shadow-sm" style="width: 250px !important">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Order #20231211202323</h6>
                 <h6 class="m-0 font-weight-bold text-primary">Table: TableName</h6>
