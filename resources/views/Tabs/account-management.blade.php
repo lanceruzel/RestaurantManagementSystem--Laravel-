@@ -5,7 +5,7 @@
 <!-- Table Start -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Account List</h6>
+        <h5 class="m-0 font-weight-bold text-primary">Account List</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -37,7 +37,7 @@
                             </a>
                         </td>
                     </tr>
-                    
+                
                 </tbody>
             </table>
         </div>
@@ -151,7 +151,7 @@
 
                         <div class="col-sm-6">
                             <label for="salary" class="mb-0">Salary</label>
-                            <input type="date" class="form-control" name="salary"
+                            <input type="number" class="form-control" name="salary"
                                 placeholder="">
                         </div>
                     </div>
