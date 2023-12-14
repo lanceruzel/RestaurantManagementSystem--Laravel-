@@ -7,6 +7,8 @@ use App\Models\EmployeeInformation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -55,9 +57,21 @@ class AccountController extends Controller
 
         if(auth()->attempt($validated)){
             $request->session()->regenerate();
-            return redirect('/')->with(['message' => 'Testttt']);
+
+            $data = DB::table('employeeinformation')->where('accountID', '=', Auth::user()->id)->first();
+
+            return view('index', ['user' => $data]);
         }
 
         return back()->withErrors(['email' => 'Login failed'])->onlyInput('email');
+    }
+
+    public function logout(Request $request){
+        auth()->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('index');
-});
+})->middleware('auth');
 
 Route::get('/login', function(){
     return view('login');
@@ -28,4 +28,6 @@ Route::get('/register', function(){
 
 Route::post('/account/register', [AccountController::class, 'register']);
 Route::post('/account/login', [AccountController::class, 'login']);
+Route::post('/account/logout', [AccountController::class, 'logout']);
+
 
