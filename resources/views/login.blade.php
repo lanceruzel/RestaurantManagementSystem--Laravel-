@@ -18,20 +18,27 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">AARC Restaurant Management System</h1>
                                     </div>
-                                        <form class="user">
+                                        <form method="POST" action="/account/login">
+                                            @csrf
+
+                                            @error('email')
+                                                <div class="alert alert-danger" role="alert">
+                                                    {{ $message }}.
+                                                </div>
+                                            @enderror
+
                                             <div class="form-group">
-                                                <input type="email" class="form-control form-control-user"
-                                                    id="exampleInputEmail" aria-describedby="emailHelp"
-                                                    placeholder="Enter Email Address...">
+                                                <input type="email" class="form-control form-control-user" name="email"
+                                                    aria-describedby="emailHelp" placeholder="Enter Email Address...">
                                             </div>
                                             <div class="form-group">
-                                                <input type="password" class="form-control form-control-user"
-                                                    id="exampleInputPassword" placeholder="Password">
+                                                <input type="password" class="form-control form-control-user" name="password"
+                                                    placeholder="Password">
                                             </div>
                                             
-                                            <a href="/" class="btn btn-primary btn-user btn-block">
+                                            <button type="submit" class="btn btn-primary btn-user btn-block">
                                                 Login
-                                            </a>
+                                            </button>
                                         </form>
                                     <hr>
                                     <div class="text-center">

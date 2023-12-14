@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,9 +20,12 @@ Route::get('/', function () {
 
 Route::get('/login', function(){
     return view('login');
-});
+})->name('login');
 
 Route::get('/register', function(){
     return view('register');
 });
+
+Route::post('/account/register', [AccountController::class, 'register']);
+Route::post('/account/login', [AccountController::class, 'login']);
 

@@ -104,7 +104,7 @@
                         <div class="col-sm-6">
                             <label for="contact" class="mb-0">Contact Number</label>
                             <input type="text" class="form-control" name="contact"
-                                placeholder="Contact Number">
+                                placeholder="">
                         </div>   
                     </div>
 
@@ -117,7 +117,6 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-info" href="#" data-toggle="modal" data-target="#viewWorkInfoModal" data-dismiss="modal">View Work Information</a>
                     <a class="btn btn-primary" href="#">Update</a>
                 </div>

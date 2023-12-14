@@ -4,9 +4,9 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+            <i class="fas fa-utensils"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">AARC</div>
+        <div class="sidebar-brand-text mx-3">AARC RMS</div>
     </a>
 
     <!-- Divider -->
@@ -19,60 +19,52 @@
             <span>Dashboard</span></a>
     </li>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Interface
-    </div>
-
     <!-- Nav Item - Account Management -->
     <li class="nav-item">
         <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-users"></i>
             <span>Account Management</span></a>
     </li>
 
     <!-- Nav Item - Menu Management -->
     <li class="nav-item">
         <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Menu Management</span></a>
+        <i class="fas fa-fw fa-utensil-spoon"></i>
+        <span>Menu Management</span></a>
     </li>
 
     <!-- Nav Item - Table Management -->
     <li class="nav-item">
         <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-table"></i>
             <span>Table Management</span></a>
     </li>
 
     <!-- Nav Item - Bill Management -->
     <li class="nav-item">
         <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-money-bill-wave"></i>
             <span>Bill Management</span></a>
     </li>
 
     <!-- Nav Item - Inventory Management -->
     <li class="nav-item">
         <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-box"></i>
             <span>Inventory Management</span></a>
     </li>
 
     <!-- Nav Item - Point of Sale -->
     <li class="nav-item">
         <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-file-invoice"></i>
             <span>Point of Sale</span></a>
     </li>
 
     <!-- Nav Item - Orders View -->
     <li class="nav-item">
         <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-concierge-bell"></i>
             <span>Orders View</span></a>
     </li>
 
