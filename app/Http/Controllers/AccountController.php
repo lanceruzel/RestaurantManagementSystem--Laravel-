@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\EmployeeInformation;
 use App\Models\User;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -74,7 +75,7 @@ class AccountController extends Controller
             $data = DB::table('employeeinformation')->where('accountID', '=', Auth::user()->id)->first();
 
             //return view('index', ['user' => $data]);
-            return redirect()->route('home')->with(['fullName' => $data->firstName. ' ' .$data->lastName]);
+            return redirect()->route('home');
         }
 
         return back()->withErrors(['email' => 'Login failed'])->onlyInput('email');

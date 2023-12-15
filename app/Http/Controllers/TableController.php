@@ -13,7 +13,7 @@ class TableController extends Controller
     public function index(){
         if(request()->ajax()){
             return datatables()->of(Table::all())
-            ->addColumn('action', 'table-action')
+            ->addColumn('action', 'TableActions.table-action')
             ->rawColumns(['action'])
             ->addIndexColumn()
             ->make(true);

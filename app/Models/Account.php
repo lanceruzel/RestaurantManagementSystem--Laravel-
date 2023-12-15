@@ -28,4 +28,8 @@ class Account extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function employee(){
+        return $this->hasOne(EmployeeInformation::class, 'accountID', 'id');
+    }
 }

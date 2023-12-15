@@ -46,7 +46,11 @@ Route::get('/bill-management', function(){
     return view('index');
 })->name('billManagement');
 
-Route::post('table/store', [TableController::class, 'store'])->name('table-store');
-Route::post('table/edit', [TableController::class, 'edit'])->name('table-edit');
-Route::post('table/destroy', [TableController::class, 'destroy'])->name('table-destroy');
-Route::get('/table-management', [TableController::class, 'index'])->name('tableManagement');
+Route::controller(TableController::class)->group(function(){
+    Route::post('table/store', 'store')->name('table-store');
+    Route::post('table/edit', 'edit')->name('table-edit');
+    Route::post('table/destroy', 'destroy')->name('table-destroy');
+    Route::get('/table-management', 'index')->name('tableManagement');
+});
+
+

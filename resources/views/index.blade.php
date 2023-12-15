@@ -74,4 +74,41 @@
     </div>
 </body>
 
+<script>
+    function showAlert(type, message){
+        let dom = $('#alert');
+
+        //Unhide
+        if(dom.hasClass('d-none')){
+            dom.removeClass('d-none');
+        }
+
+        //Clear alert success class if theres any
+        if(dom.hasClass('alert-success')){
+            dom.removeClass('alert-success');
+        }
+
+        //Clear danger success class if theres any
+        if(dom.hasClass('alert-danger')){
+            dom.removeClass('alert-danger');
+        }
+
+        if(type === 'success'){
+            dom.addClass('alert-success');
+        }
+
+        if(type === 'danger'){
+            dom.addClass('alert-danger');
+        }
+
+        $('#alert-messageeeeee').text(message);
+
+        //Auto Close Alert
+        setTimeout(function() {
+            //Hide alert
+            dom.addClass('d-none');
+        }, 4000);
+    }
+</script>
+
 </html>

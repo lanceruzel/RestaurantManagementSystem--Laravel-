@@ -2,6 +2,8 @@
     <h1 class="h3 mb-0 text-gray-800">Table Management</h1>
 </div>
 
+<x-alert/>
+
 <!-- Table Start -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -169,6 +171,7 @@
                 $("#btn_addEditSubmit"). attr("disabled", false);
 
                 updateDataTable();
+                showAlert('success','Successfully Added/Updated.');
             },
             error: (data) =>{
                 console.log(data);
@@ -176,6 +179,7 @@
         });
     });
 
+    //Show Add Modal
     function add(){
         $('#addEditTableModal_title').text('Add Table');
         $('#btn_addEditSubmit').text('Add');
@@ -183,8 +187,8 @@
         $('#addEditTableModal').modal('toggle');
     }
 
-    //Edit Table
-    function edit(id){
+    //Show Edit Modal
+    function showEditModal(id){
         $.ajax({
             type:'POST',
             url: '{{ route('table-edit') }}',
@@ -213,6 +217,7 @@
         });
     }
 
+    //Delete Table
     function destroy(id){
         $('#deleteTableModal').modal('toggle');
 
@@ -227,11 +232,13 @@
                 success: function(response){
                     $('#deleteTableModal').modal('toggle');
                     updateDataTable();
+                    showAlert('success','Table has been successfully deleted.');
                 }
             });
         });  
     }
 
+    //refresh data table
     function updateDataTable(){
         var oTable = $('#table_table').dataTable();
         oTable.fnDraw(false);
