@@ -1,6 +1,6 @@
 @include('partials.header')
 
-<body id="page-top">
+<body id="page-top" data-barba="wrapper">
     <!-- Page Wrapper -->
     <div id="wrapper">
 
@@ -14,19 +14,27 @@
             <div id="content">
 
                 <!-- Topbar -->
-                @include('partials.topbar', ['fullName' => $user->firstName. ' ' .$user->lastName])
+                @include('partials.topbar')
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <main class="container-fluid" data-barba="container" data-barba-namespace="home">
 
                     <!-- Content -->
-                    @include('tabs.account-management')
-
-                </div>
-                <!-- /.container-fluid -->
-
+                    @if (request()->routeIS('accountManagement'))
+                        @include('tabs.account-management')
+                    @elseif(request()->routeIS('tableManagement'))
+                        @include('tabs.table-management')
+                    @elseif(request()->routeIS('menuManagement'))
+                        @include('tabs.menu-management')
+                    @elseif(request()->routeIS('inventoryManagement'))
+                        @include('tabs.inventory-management')
+                    @elseif(request()->routeIS('billManagement'))
+                        @include('tabs.bill-management')
+                    @else
+                        @include('tabs.dashboard')
+                    @endif
+                </main>
             </div>
-            <!-- End of Main Content -->
 
             <!-- Footer -->
             @include('partials.footer')
@@ -67,4 +75,3 @@
 </body>
 
 </html>
-

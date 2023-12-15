@@ -30,4 +30,6 @@
     <script src="{{asset('vendor/chart.js/Chart.min.js')}}"></script>
     <script src="{{asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 </head>

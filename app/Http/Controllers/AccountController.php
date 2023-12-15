@@ -14,8 +14,21 @@ use Illuminate\Validation\Rule;
 
 class AccountController extends Controller
 {
-    public function register(Request $request)
-    {
+    public function index(){
+        $data  = DB::table('account')
+        ->select('account.email', 'account.role', 'employeeinformation.*')
+        ->join('employeeinformation', 'employeeinformation.accountID', '=', 'account.id')
+        ->get();
+
+        return view('index', ['account' => $data]);
+    }
+
+    public function update(Request $request){
+        
+        return response()->json(['success' => 'Successfully.']);
+    }
+
+    public function register(Request $request){
         $validated = $request->validate([
             "firstName" => ['required', 'min:3'],
             "middleName" => ['required', 'min:3'],
@@ -60,7 +73,8 @@ class AccountController extends Controller
 
             $data = DB::table('employeeinformation')->where('accountID', '=', Auth::user()->id)->first();
 
-            return view('index', ['user' => $data]);
+            //return view('index', ['user' => $data]);
+            return redirect()->route('home')->with(['fullName' => $data->firstName. ' ' .$data->lastName]);
         }
 
         return back()->withErrors(['email' => 'Login failed'])->onlyInput('email');

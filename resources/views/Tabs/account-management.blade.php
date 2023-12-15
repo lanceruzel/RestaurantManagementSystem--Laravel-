@@ -21,22 +21,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Tiger Nixon</td>
-                        <td>System Architect</td>
-                        <td>Edinburgh</td>
-                        <td>61</td>
-                        <td>2011/04/25</td>
-                        <td>
-                            <a href="#" class="btn btn-info btn-circle" data-toggle="modal" data-target="#editAccountModal">
-                                <i class="fas fa-pencil-alt"></i>
-                            </a>
+                    @foreach ($account as $item)
+                        <tr>
+                            <td>{{ $item->firstName. ' ' .$item->middleName. ' ' .$item->lastName}}</td>
+                            <td>{{ $item->address }}</td>
+                            <td>{{ $item->contact }}</td>
+                            <td>{{ $item->email }}</td>
+                            <td>{{ $item->role }}</td>
+                            <td>
+                                <a href="#" class="btn btn-info btn-circle" data-toggle="modal" data-target="#editAccountModal" 
+                                    data-id="{{ $item->accountID }}"
+                                    data-firstName="{{ $item->firstName }}"
+                                    data-middleName="{{ $item->middleName }}"
+                                    data-lastName="{{ $item->lastName }}"
+                                    data-birthdate="{{ $item->birthdate }}"
+                                    data-gender="{{ $item->gender }}"
+                                    data-address="{{ $item->address }}"
+                                    data-contact="{{ $item->contact }}"
+                                    data-email="{{ $item->email }}"
+                                    data-role="{{ $item->role }}"
+                                        >
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
 
-                            <a href="#" class="btn btn-danger btn-circle" data-toggle="modal" data-target="#deleteAccountModal">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
+                                <a href="#" class="btn btn-danger btn-circle" data-toggle="modal" data-target="#deleteAccountModal">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
                 
                 </tbody>
             </table>
@@ -55,38 +68,40 @@
                 </button>
             </div>
 
-            <form>
+            <form action="javascript:void(0)" id="form_editAccount">
                 <div class="modal-body">
                     <div class="form-group row">
+                        <input type="text" class="form-control d-none" name="id" id="modalEdit_id">  
+
                         <div class="col-sm-6 mb-3 mb-sm-0">
                             <label for="firstName" class="mb-0">First Name</label>
-                            <input type="text" class="form-control" name="firstName"
+                            <input type="text" class="form-control" name="firstName" id="modalEdit_firstName"
                                 placeholder="">  
                         </div>
 
                         <div class="col-sm-6">
                             <label for="middleName" class="mb-0">Middle Name</label>
-                            <input type="text" class="form-control" name="middleName"
+                            <input type="text" class="form-control" name="middleName" id="modalEdit_middleName"
                                 placeholder="">
                         </div>                                       
                     </div>
 
                     <div class="form-group">
                         <label for="lastName" class="mb-0">Last Name</label>
-                        <input type="text" class="form-control" name="lastName"
+                        <input type="text" class="form-control" name="lastName" id="modalEdit_lastName"
                             placeholder="">
                     </div>
 
                     <div class="form-group row">
                             <div class="col-sm-6 mb-3 mb-sm-0">
                                 <label for="birthdate" class="mb-0">Birthdate</label>
-                                <input type="date" class="form-control" name="birthdate"
+                                <input type="date" class="form-control" name="birthdate" id="modalEdit_birthdate"
                                     placeholder="">
                             </div>
 
                             <div class="col-sm-6">
                                 <label for="gender" class="mb-0">Gender</label>
-                                <select class="form-select-user form-control" name="gender">
+                                <select class="form-select-user form-control" name="gender" id="modalEdit_gender">
                                     <option value="" selected disabled>Select Gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
@@ -97,28 +112,41 @@
                     <div class="form-group row">
                         <div class="col-sm-6 mb-3 mb-sm-0">
                             <label for="address" class="mb-0">Address</label>
-                            <input type="text" class="form-control" name="address"
+                            <input type="text" class="form-control" name="address" id="modalEdit_address"
                                 placeholder="">
                         </div>
 
                         <div class="col-sm-6">
                             <label for="contact" class="mb-0">Contact Number</label>
-                            <input type="text" class="form-control" name="contact"
+                            <input type="text" class="form-control" name="contact" id="modalEdit_contact"
                                 placeholder="">
                         </div>   
                     </div>
 
                     <div class="form-group">
                         <label for="email" class="mb-0">Email</label>
-                        <input type="email" class="form-control" name="email"
+                        <input type="email" class="form-control" name="email" id="modalEdit_email"
                             placeholder="">
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label for="email" class="mb-0">Role</label>
+                            <select class="form-select-user form-control" name="gender" id="modalEdit_role">
+                                <option value="" selected disabled>Select Role</option>
+                                <option value="None">None</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Receptionist">Receptionist</option>
+                            </select>
+                        </div>
+                        
                     </div>
                 
                 </div>
 
                 <div class="modal-footer">
                     <a class="btn btn-info" href="#" data-toggle="modal" data-target="#viewWorkInfoModal" data-dismiss="modal">View Work Information</a>
-                    <a class="btn btn-primary" href="#">Update</a>
+                    <button class="btn btn-primary" type="submit" id="btn_updateEmployeeInformation">Update</button>
                 </div>
             </form>
         </div>
@@ -206,5 +234,64 @@
 <script>
     $(document).ready(function() {
         $('#dataTable').DataTable();
+
+        let updateAccount = function(){
+            //Fields 
+            let accountID = $('#modalEdit_id');
+            let firstName = $('#modalEdit_firstName');
+            let middleName = $('#modalEdit_middleName');
+            let lastName = $('#modalEdit_lastName');
+            let birthdate = $('#modalEdit_birthdate');
+            let gender = $('#modalEdit_gender');
+            let address = $('#modalEdit_address');
+            let contact = $('#modalEdit_contact');
+            let email = $('#modalEdit_email');
+            let role = $('#modalEdit_role');
+
+            //Get data from the row selected
+            $('#editAccountModal').on('show.bs.modal', function (e) {
+                //Get button that triggered it
+                const button = e.relatedTarget;
+
+                accountID.val($(button).attr('data-id'));
+                firstName.val($(button).attr('data-firstName'));
+                middleName.val($(button).attr('data-middleName'));
+                lastName.val($(button).attr('data-lastName'));
+                birthdate.val($(button).attr('data-birthdate'));
+                gender.val($(button).attr('data-gender'));
+                address.val($(button).attr('data-address'));
+                contact.val($(button).attr('data-contact'));
+                email.val($(button).attr('data-email'));
+                role.val($(button).attr('data-role'));
+            });
+        }();  
+
+        $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    });
+
+    //Update Account
+    $('#form_editAccount').on('submit', function(e){
+        e.preventDefault();
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ url('account/update') }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: (data) =>{
+                console.log(data);
+            },
+            error: (data) =>{
+                console.log(data);
+            }
+        });
     });
 </script>
