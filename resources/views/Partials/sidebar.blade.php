@@ -21,21 +21,21 @@
 
     <!-- Nav Item - Account Management -->
     <li class="nav-item">
-        <a class="nav-link" href="/account-management">
+        <a class="nav-link" href="{{ route('account-management') }}">
             <i class="fas fa-fw fa-users"></i>
             <span>Account Management</span></a>
     </li>
 
     <!-- Nav Item - Menu Management -->
     <li class="nav-item">
-        <a class="nav-link" href="/menu-management">
+        <a class="nav-link" href="{{ route('menu-management') }}">
         <i class="fas fa-fw fa-utensil-spoon"></i>
         <span>Menu Management</span></a>
     </li>
 
     <!-- Nav Item - Table Management -->
     <li class="nav-item">
-        <a class="nav-link" href="/table-management">
+        <a class="nav-link" href="{{ route('table-management') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Table Management</span></a>
     </li>

@@ -257,7 +257,7 @@
             ajax: '{{ route('menu-management') }}',
             columns:[
                 {data: 'menuName', name: 'menuName'},
-                {data: 'categoryID', name: 'categoryID'},
+                {data: 'categoryName', name: 'categoryName'},
                 {data: 'menuPrice', name: 'menuPrice'},
                 {data: 'availability', name: 'availability'},
                 {data: 'action', name: 'action', orderable: false}

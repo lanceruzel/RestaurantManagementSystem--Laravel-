@@ -29,12 +29,12 @@ Route::get('/register', function(){
     return view('register');
 })->name('register');
 
-Route::post('/account/register', [AccountController::class, 'register']);
-Route::post('/account/login', [AccountController::class, 'login']);
-Route::post('/account/logout', [AccountController::class, 'logout']);
-Route::post('/account/update', [AccountController::class, 'update']);
-
-Route::get('/account-management', [AccountController::class, 'index'])->name('accountManagement')->middleware('auth');
+Route::controller(AccountController::class)->group(function(){
+    Route::post('/account/register', [AccountController::class, 'register']);
+    Route::post('/account/login', [AccountController::class, 'login']);
+    Route::post('/account/logout', [AccountController::class, 'logout']);
+    Route::post('/account/update', [AccountController::class, 'update']);
+});
 
 Route::get('/inventory-management', function(){
     return view('index');
@@ -44,11 +44,19 @@ Route::get('/bill-management', function(){
     return view('index');
 })->name('billManagement');
 
+Route::controller(AccountController::class)->middleware('auth')->group(function(){
+    Route::get('/account-management', 'index')->name('account-management');
+    Route::post('/account-management/view', 'viewInfos')->name('account-view');
+    Route::post('/account-management/personal-update', 'updatePersonal')->name('account-personal-update');
+    Route::post('/account-management/account-update', 'updateAccount')->name('account-update');
+    Route::post('/account-management/account-destroy', 'destroy')->name('account-destroy');
+});
+
 Route::controller(TableController::class)->middleware('auth')->group(function(){
+    Route::get('/table-management', 'index')->name('table-management');
     Route::post('table/store', 'store')->name('table-store');
     Route::post('table/edit', 'edit')->name('table-edit');
     Route::post('table/destroy', 'destroy')->name('table-destroy');
-    Route::get('/table-management', 'index')->name('tableManagement');
 });
 
 Route::controller(MenuController::class)->middleware('auth')->group(function(){

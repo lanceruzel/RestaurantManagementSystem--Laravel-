@@ -13,7 +13,11 @@ class MenuController extends Controller
     //
     public function index(){
         if(request()->ajax()){
-            return datatables()->of(DB::table('menu'))
+            return datatables()->of(
+                DB::table('menu')
+                ->select('*', 'menu_category.categoryName', 'menu.id as id')
+                ->leftJoin('menu_category', 'menu_category.id', '=', 'menu.categoryID')
+                ->get())
             ->addColumn('action', 'TableActions.table-action-addEdit') 
             ->rawColumns(['action'])
             ->addIndexColumn()

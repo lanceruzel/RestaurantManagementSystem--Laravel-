@@ -16,17 +16,62 @@ use Illuminate\Validation\Rule;
 class AccountController extends Controller
 {
     public function index(){
-        $data  = DB::table('account')
-        ->select('account.email', 'account.role', 'employeeinformation.*')
-        ->join('employeeinformation', 'employeeinformation.accountID', '=', 'account.id')
-        ->get();
+        if(request()->ajax()){
+            return datatables()->of(
+                DB::table('account')->
+                select('account.email', 'account.role', 'employeeinformation.*', DB::raw("CONCAT(employeeinformation.firstName,' ',employeeinformation.middleName,' ',employeeinformation.lastName) as fullname"), 'account.id as id')
+                ->join('employeeinformation', 'employeeinformation.accountID', '=', 'account.id')
+                ->get())
+            ->addColumn('action', 'TableActions.table-action-addEdit') 
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+        }
 
-        return view('index', ['account' => $data]);
+        return view('index');
     }
 
-    public function update(Request $request){
-        
-        return response()->json(['success' => 'Successfully.']);
+    public function viewInfos(Request $request){
+        $account = DB::table('account')
+        ->select('account.email', 'account.role', 'employeeinformation.*')
+        ->join('employeeinformation', 'employeeinformation.accountID', '=', 'account.id')
+        ->where('employeeinformation.id', '=', $request->id)
+        ->first();
+
+        return Response()->json($account);
+    }
+
+    public function updatePersonal(Request $request){
+        $validated = $request->validate([
+            "firstName" => ['required', 'min:3'],
+            "middleName" => ['required', 'min:3'],
+            "lastName" => ['required', 'min:3'],
+            "birthdate" => ['required', 'before:today'],
+            "gender" => ['required'],
+            "address" => ['required', 'min:5'],
+            "contact" => ['required', 'min:11', 'max:11'],
+        ]);
+
+        $information = EmployeeInformation::where('accountID', '=', $request->id)->update($validated);
+
+        return Response()->json($information);
+    }
+
+    public function updateAccount(Request $request){
+        $validated = $request->validate([
+            "email" => ['required', 'min:3', Rule::unique('account', 'email')],
+            "role" => ['required'],
+        ]);
+
+        $information = Account::where('id', '=', $request->id)->update($validated);
+
+        return Response()->json($information);
+    }
+    
+    public function destroy(Request $request){
+        $table = Account::where('id', '=', $request->id)->delete();
+
+        return Response()->json($table); 
     }
 
     public function register(Request $request){

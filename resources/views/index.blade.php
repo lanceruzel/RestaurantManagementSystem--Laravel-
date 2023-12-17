@@ -20,9 +20,9 @@
                 <main class="container-fluid" data-barba="container" data-barba-namespace="home">
 
                     <!-- Content -->
-                    @if (request()->routeIS('accountManagement'))
+                    @if (request()->routeIS('account-management'))
                         @include('tabs.account-management')
-                    @elseif(request()->routeIS('tableManagement'))
+                    @elseif(request()->routeIS('table-management'))
                         @include('tabs.table-management')
                     @elseif(request()->routeIS('menu-management'))
                         @include('tabs.menu-management')

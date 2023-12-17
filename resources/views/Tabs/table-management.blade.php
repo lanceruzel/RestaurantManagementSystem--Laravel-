@@ -139,8 +139,6 @@
     let addEditModalTitle = $('#addEditTableModal_title');
     let addEditModalBtn = $('#btn_addEditSubmit');
 
-    //let tableNameField = $('#');
-
     let tableNameField = $('#tableName');
     let tableCapacity = $('#tableCapacity');
 
@@ -159,7 +157,7 @@
         $('#table_table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{{ route('tableManagement') }}',
+            ajax: '{{ route('table-management') }}',
             columns:[
                 {data: 'tableName', name: 'tableName'},
                 {data: 'tableCapacity', name: 'tableCapacity'},
