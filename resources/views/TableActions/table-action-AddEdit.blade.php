@@ -2,7 +2,7 @@
     <i class="fas fa-pencil-alt"></i>
 </button>
 
-<button class="btn btn-danger btn-circle" onClick="destroy({{ $id }})">
+<button class="btn btn-danger btn-circle" onClick="showDestroyModel({{ $id }})">
     <i class="fas fa-trash"></i>
 </button>
 

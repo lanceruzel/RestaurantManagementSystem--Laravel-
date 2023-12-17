@@ -9,8 +9,7 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h5 class="m-0 font-weight-bold text-primary">Table List</h6>
         <button class="btn btn-primary" data-mode="add-table" onClick="add()">
-            <i class="fas fa-plus me-2"></i>
-            Add Table
+            <strong>+</strong> Add Menu
         </button>
     </div>
     <div class="card-body">
@@ -50,12 +49,16 @@
                             <label for="tableName" class="mb-0">Table Name</label>
                             <input type="text" class="form-control" name="tableName" id="tableName"
                                 placeholder="">  
+
+                            <div class="invalid-feedback" id="tableName_invalid"></div>
                         </div>
 
                         <div class="col-sm-6">
                             <label for="tableCapacity" class="mb-0">Table Capacity</label>
                             <input type="number" class="form-control" name="tableCapacity" id="tableCapacity"
                                 placeholder="">
+
+                            <div class="invalid-feedback" id="tableCapacity_invalid"></div>
                         </div>                                       
                     </div>
 
@@ -130,6 +133,21 @@
 </div>
 
 <script>
+    let deleteModal = $('#deleteTableModal');
+
+    let addEditModal = $('#addEditTableModal');
+    let addEditModalTitle = $('#addEditTableModal_title');
+    let addEditModalBtn = $('#btn_addEditSubmit');
+
+    //let tableNameField = $('#');
+
+    let tableNameField = $('#tableName');
+    let tableCapacity = $('#tableCapacity');
+
+    let tableNameInvalid = $('#tableName_invalid');
+    let tableCapacityInvalid = $('#tableCapacity_invalid');
+
+
     $(document).ready(function() {
         $.ajaxSetup({
             headers:{
@@ -153,8 +171,12 @@
         });
     });
 
+    //Add / Edit Function
     $('#table_addEditForm').on('submit', function(e){
         e.preventDefault();
+
+        tableNameInvalid.removeClass('is-invalid');
+        tableCapacityInvalid.removeClass('is-invalid');
 
         var formData = new FormData(this);
 
@@ -166,25 +188,38 @@
             contentType: false,
             processData: false,
             success: (data) =>{
-                $('#addEditTableModal').modal('toggle');
-                $("#btn_addEditSubmit").html('Submit');
-                $("#btn_addEditSubmit"). attr("disabled", false);
+                addEditModal.modal('toggle');
+                addEditModalBtn.text('Submit');
 
-                updateDataTable();
+                updateDataTable('#table_table');
                 showAlert('success','Successfully Added/Updated.');
             },
             error: (data) =>{
-                console.log(data);
+                if(data['responseJSON'].errors.tableName){
+                    tableNameField.addClass('is-invalid');
+                    tableNameInvalid.text(data['responseJSON'].errors.tableName[0]);
+                } 
+
+                if(data['responseJSON'].errors.tableCapacity){
+                    tableCapacity.addClass('is-invalid');
+                    tableCapacityInvalid.text(data['responseJSON'].errors.tableCapacity[0]);
+                } 
             }
         });
     });
 
     //Show Add Modal
     function add(){
-        $('#addEditTableModal_title').text('Add Table');
-        $('#btn_addEditSubmit').text('Add');
+        addEditModalTitle.text('Add Table');
+        addEditModalBtn.text('Add');
         $('#id').val('');
-        $('#addEditTableModal').modal('toggle');
+        addEditModal.modal('show');
+
+        tableNameField.val('');
+        tableCapacity.val('');
+        
+        tableNameInvalid.removeClass('is-invalid');
+        tableCapacityInvalid.removeClass('is-invalid');
     }
 
     //Show Edit Modal
@@ -195,12 +230,12 @@
             data: { id: id },
             dataType: 'json',
             success: function(response){
-                $('#addEditTableModal_title').text('Edit Table');
-                $('#btn_addEditSubmit').text('Update');
-                $('#addEditTableModal').modal('toggle');
+                addEditModalTitle.text('Edit Table');
+                addEditModalBtn.text('Update');
+                addEditModal.modal('toggle');
                 $('#id').val(response.id);
-                $('#tableName').val(response.tableName);
-                $('#tableCapacity').val(response.tableCapacity);
+                tableNameField.val(response.tableName);
+                tableCapacity.val(response.tableCapacity);
 
                 if(response.status === 'Active'){
                     $('#status-Active').prop('checked', true);
@@ -213,12 +248,15 @@
                 }else{
                     $('#availability-Unavailable').prop('checked', true);
                 }
+
+                tableNameField.removeClass('is-invalid');
+                tableCapacity.removeClass('is-invalid');
             }
         });
     }
 
     //Delete Table
-    function destroy(id){
+    function showDestroyModel(id){
         $('#deleteTableModal').modal('toggle');
 
         $('#table_deleteForm').on('submit', function(e){
@@ -230,17 +268,11 @@
                 data: { id: id },
                 dataType: 'json',
                 success: function(response){
-                    $('#deleteTableModal').modal('toggle');
-                    updateDataTable();
+                    deleteModal.modal('toggle');
+                    updateDataTable('#table_table');
                     showAlert('success','Table has been successfully deleted.');
                 }
             });
         });  
     }
-
-    //refresh data table
-    function updateDataTable(){
-        var oTable = $('#table_table').dataTable();
-        oTable.fnDraw(false);
-    }
-</script>
+</script>   

@@ -109,6 +109,12 @@
             dom.addClass('d-none');
         }, 4000);
     }
+
+    //refresh data table
+    function updateDataTable(datatable){
+        var oTable = $(datatable).dataTable();
+        oTable.fnDraw(false);
+    }
 </script>
 
 </html>

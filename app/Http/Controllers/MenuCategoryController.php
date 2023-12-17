@@ -10,6 +10,11 @@ use Illuminate\Validation\Rule;
 class MenuCategoryController extends Controller
 {
     //
+    public function all(){
+        $data = MenuCategory::all();
+        return Response()->json($data);
+    }
+
     public function index(){
         if(request()->ajax()){
             return datatables()->of(MenuCategory::all())
@@ -24,26 +29,25 @@ class MenuCategoryController extends Controller
 
     public function store(Request $request){
         $validated = $request->validate([
-            "categoryName" => ['required', 'min:3', Rule::unique('menu_category', 'categoryName')],
+            "categoryName" => ['required', 'min:3'],
         ]);
 
-        $table = MenuCategory::updateOrCreate(
+        $category = MenuCategory::updateOrCreate(
             ['id' => $request->id],
             ['categoryName' => $validated['categoryName']]);
 
-        return Response()->json($table);
+        return Response()->json($category);
     }
 
     public function edit(Request $request){
-        $where = array('id' => $request->id);
-        $table = MenuCategory::where($where)->first();
+        $category = MenuCategory::where('id', '=', $request->id)->first();
 
-        return Response()->json($table);
+        return Response()->json($category);
     }
 
     public function destroy(Request $request){
-        $table = MenuCategory::where('id', '=', $request->id)->delete();
+        $category = MenuCategory::where('id', '=', $request->id)->delete();
 
-        return Response()->json($table); 
+        return Response()->json($category); 
     }
 }
