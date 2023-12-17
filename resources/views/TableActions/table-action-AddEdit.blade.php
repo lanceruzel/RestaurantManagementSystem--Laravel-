@@ -5,3 +5,4 @@
 <button class="btn btn-danger btn-circle" onClick="destroy({{ $id }})">
     <i class="fas fa-trash"></i>
 </button>
+

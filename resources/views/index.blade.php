@@ -24,7 +24,7 @@
                         @include('tabs.account-management')
                     @elseif(request()->routeIS('tableManagement'))
                         @include('tabs.table-management')
-                    @elseif(request()->routeIS('menuManagement'))
+                    @elseif(request()->routeIS('menu-management'))
                         @include('tabs.menu-management')
                     @elseif(request()->routeIS('inventoryManagement'))
                         @include('tabs.inventory-management')

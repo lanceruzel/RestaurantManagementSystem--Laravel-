@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Table;
-use GuzzleHttp\Psr7\Response;
+use App\Models\MenuCategory;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
 
-class TableController extends Controller
+class MenuCategoryController extends Controller
 {
+    //
     public function index(){
         if(request()->ajax()){
-            return datatables()->of(Table::all())
-            ->addColumn('action', 'TableActions.table-action-AddEdit')
+            return datatables()->of(MenuCategory::all())
+            ->addColumn('action', 'TableActions.table-action-addEdit') 
             ->rawColumns(['action'])
             ->addIndexColumn()
             ->make(true);
@@ -24,29 +24,25 @@ class TableController extends Controller
 
     public function store(Request $request){
         $validated = $request->validate([
-            "tableName" => ['required', 'min:3'],
-            "tableCapacity" => ['required', 'min:1']
+            "categoryName" => ['required', 'min:3', Rule::unique('menu_category', 'categoryName')],
         ]);
 
-        $table = Table::updateOrCreate(
+        $table = MenuCategory::updateOrCreate(
             ['id' => $request->id],
-            ['tableName' => $validated['tableName'],
-            'tableCapacity' => $validated['tableCapacity'],
-            'status' => $request->status,
-            'availability' => $request->availability]);
+            ['categoryName' => $validated['categoryName']]);
 
         return Response()->json($table);
     }
 
     public function edit(Request $request){
         $where = array('id' => $request->id);
-        $table = Table::where($where)->first();
+        $table = MenuCategory::where($where)->first();
 
         return Response()->json($table);
     }
 
     public function destroy(Request $request){
-        $table = Table::where('id', '=', $request->id)->delete();
+        $table = MenuCategory::where('id', '=', $request->id)->delete();
 
         return Response()->json($table); 
     }

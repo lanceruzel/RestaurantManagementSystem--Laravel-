@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,10 +35,6 @@ Route::post('/account/update', [AccountController::class, 'update']);
 
 Route::get('/account-management', [AccountController::class, 'index'])->name('accountManagement')->middleware('auth');
 
-Route::get('/menu-management', function(){
-    return view('index');
-})->name('menuManagement');
-
 Route::get('/inventory-management', function(){
     return view('index');
 })->name('inventoryManagement');
@@ -46,11 +43,19 @@ Route::get('/bill-management', function(){
     return view('index');
 })->name('billManagement');
 
-Route::controller(TableController::class)->group(function(){
+Route::controller(TableController::class)->middleware('auth')->group(function(){
     Route::post('table/store', 'store')->name('table-store');
     Route::post('table/edit', 'edit')->name('table-edit');
     Route::post('table/destroy', 'destroy')->name('table-destroy');
     Route::get('/table-management', 'index')->name('tableManagement');
 });
+
+Route::controller(MenuCategoryController::class)->middleware('auth')->group(function(){
+    Route::get('/menu-management', 'index')->name('menu-management');
+    Route::post('/menu-management/cagetory/store', 'store')->name('category-store');
+    Route::post('/menu-management/cagetory/edit', 'edit')->name('category-edit');
+    Route::post('/menu-management/cagetory/destroy', 'destroy')->name('category-destroy');
+});
+
 
 
