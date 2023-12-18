@@ -30,6 +30,10 @@
                         @include('tabs.inventory-management')
                     @elseif(request()->routeIS('billManagement'))
                         @include('tabs.bill-management')
+                    @elseif(request()->routeIS('pos'))
+                        @include('tabs.point-of-sale')
+                    @elseif(request()->routeIS('poss'))
+                        @include('tabs.pos')
                     @else
                         @include('tabs.dashboard')
                     @endif

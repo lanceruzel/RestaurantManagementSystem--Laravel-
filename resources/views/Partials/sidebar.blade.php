@@ -56,14 +56,14 @@
 
     <!-- Nav Item - Point of Sale -->
     <li class="nav-item">
-        <a class="nav-link" href="/point-of-sale">
+        <a class="nav-link" href="{{ route('pos') }}">
             <i class="fas fa-fw fa-file-invoice"></i>
             <span>Point of Sale</span></a>
     </li>
 
     <!-- Nav Item - Orders View -->
     <li class="nav-item">
-        <a class="nav-link" href="/orders">
+        <a class="nav-link" href="{{ route('poss') }}">
             <i class="fas fa-fw fa-concierge-bell"></i>
             <span>Orders View</span></a>
     </li>

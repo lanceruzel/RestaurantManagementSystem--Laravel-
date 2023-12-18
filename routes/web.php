@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PosController;
 use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +45,10 @@ Route::get('/bill-management', function(){
     return view('index');
 })->name('billManagement');
 
+Route::get('/poss', function(){
+    return view('index');
+})->name('poss');
+
 Route::controller(AccountController::class)->middleware('auth')->group(function(){
     Route::get('/account-management', 'index')->name('account-management');
     Route::post('/account-management/view', 'viewInfos')->name('account-view');
@@ -73,3 +78,5 @@ Route::controller(MenuCategoryController::class)->middleware('auth')->group(func
     Route::post('/menu-management/cagetory/edit', 'edit')->name('category-edit');
     Route::post('/menu-management/cagetory/destroy', 'destroy')->name('category-destroy');
 });
+
+Route::get('/pos', [PosController::class, 'index'])->name('pos');
