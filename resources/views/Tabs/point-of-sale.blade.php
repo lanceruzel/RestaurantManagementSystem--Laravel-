@@ -14,28 +14,20 @@
     <div class="col-8 border-right border-2 border-secondary p-0 position-relative">
         <!-- Categories -->
         <div class="d-flex py-2 justify-content-center align-items-center border-bottom border-2 border-secondary overflow-auto px-3 position-absolute" style="max-width: 100%; min-width: 100%; height: 120px">
-            <div class="border border-3 d-flex justify-content-center align-items-center m-1" style="height: 70px; width: 110px; min-width: 110px">
+            <button class="btn btn-info d-flex justify-content-center align-items-center m-1" style="height: 70px; width: 110px; min-width: 110px" onClick="changeShownMenu('all')">
                 All
-            </div>
+            </button>
 
             @foreach ($categoryList as $category)
-                <div class="border border-2 d-flex justify-content-center align-items-center mx-2" style="height: 70px; width: 110px; min-width: 110px">
+                <button class="btn btn-info d-flex justify-content-center align-items-center mx-2" style="height: 70px; width: 110px; min-width: 110px" onClick="changeShownMenu({{ $category->id }})">
                     {{ $category->categoryName }}
-                </div>
+                </button>
             @endforeach
         </div>
 
         <!-- Menu -->
-        <div class="d-flex flex-wrap p-4 justify-content-center overflow-auto position-absolute" style="max-height: calc(100% - 120px); min-height: calc(100% - 120px); bottom:0;">
-            
-            @foreach ($menuList as $menu)
-                <button class="btn btn-primary d-flex flex-column justify-content-center align-items-center m-2 lh-1" 
-                style="height: 90px; width: 150px; min-width: 150px" 
-                onclick="addItem('{{ $menu->menuName }}', '{{ $menu->menuPrice }}', '{{ $menu->id }}')">
-                    <h5>{{ $menu->menuName }}</h5>
-                    <span class="small">₱{{ $menu->menuPrice }}</span>
-                </button>
-            @endforeach
+        <div id="menu-container" class="d-flex flex-wrap p-4 justify-content-center overflow-auto position-absolute" style="max-height: calc(100% - 120px); min-height: calc(100% - 120px); bottom:0;">
+        
         </div>
     </div>
 
@@ -80,7 +72,7 @@
                 
             </div>
 
-            <button class="btn btn-primary" style="height: 70px;" data-toggle="modal" data-target="#assignTable_modal">Assign Table</button>
+            <button class="btn btn-primary" style="height: 70px;" onClick="loadTables()">Assign Table</button>
         </div>
     </div>
 </div>
@@ -189,9 +181,71 @@
 
 <script>
     $(document).ready(function(){
-
+        $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     });
 
+
+    function loadTables(){
+        $('#assignTable_modal').modal('show');
+
+        let tableListView = '';
+
+        $.ajax({
+            type:'POST',
+            url: '{{ route('pos-table') }}',
+            data: null,
+            dataType: 'json',
+            success: function(response){
+                $.each(response, function (i, table) {
+                    const { tableName, availability } = table;
+
+                    const html = `<button class="btn p-5 m-2 d-flex flex-column flex-fill justify-content-center align-items-center btn-${(availability === 'Available') ? 'success ' : 'danger'}" id="tableInformation-container" style="height: 100px; width: 150px"">
+                        <div class="fw-bold text-white">
+                            ${ tableName }
+                        </div>
+
+                        <div id="tableStatus" class="text-white">
+                            ${ availability }
+                        </div>
+                    </button >`;
+
+                    tableListView += html;
+                });
+
+                $("#tableContainer").html(tableListView);
+            }
+        });
+    }
+    //////////////////////////////
+    // Load Menu
+    let menu = @json($menuList);
+
+    function changeShownMenu(selectedID){
+        let menuListView = '';
+
+        for (i = 0; i < menu.length; i++) {
+            var {menuName, menuPrice, quantity, categoryID, id} = menu[i];
+
+            if(selectedID === categoryID || selectedID === 'all'){
+                const html = `<button class="btn btn-primary d-flex flex-column justify-content-center align-items-center m-2 lh-1" 
+                            style="height: 90px; width: 150px; min-width: 150px" 
+                            onclick="addItem('${ menuName }', '${ menuPrice }', '${ id }')">
+                                <h5>${ menuName }</h5>
+                                <span class="small">₱${ menuPrice }</span>
+                            </button>`;
+
+                menuListView += html;
+            }
+        }
+
+        $("#menu-container").html(menuListView);
+    }
+
+    /////////////////////////////
     $(window).on('load', function () {
         $('.modal.fade').appendTo("#POS-container");
     });
@@ -233,29 +287,12 @@
         }
     }
 
-    function openTables(){
-        
-    }
-
     /////////////////////////////
     const orderList = [];
 
     loadOrderList();
 
-    function getTotal(){
-        let total = 0;
-
-        for(i = 0; i < orderList.length; i++){
-            let quantity = parseInt(orderList[i].quantity);
-            let price = parseFloat(orderList[i].menuPrice)
-            total += (quantity*price);
-        }
-
-        $('#totalAmount').text('₱' + (total).toFixed(2));
-    }
-
     function loadOrderList(){
-        console.log(orderList)
         let orderViewList = '';
 
         for (i = 0; i < orderList.length; i++) {
@@ -276,7 +313,7 @@
                                 </button>
                             </div>
 
-                            <button class="btn btn-sm btn-danger">
+                            <button class="btn btn-sm btn-danger" onClick="deleteOrderProduct(${ i })">
                                 <i class="fas fa-fw fa-trash"></i>
                             </button>
                         </td>
@@ -287,6 +324,18 @@
 
         $("#orderList-container").html(orderViewList);
         getTotal();
+    }
+
+    function getTotal(){
+        let total = 0;
+
+        for(i = 0; i < orderList.length; i++){
+            let quantity = parseInt(orderList[i].quantity);
+            let price = parseFloat(orderList[i].menuPrice)
+            total += (quantity*price);
+        }
+
+        $('#totalAmount').text('₱' + (total).toFixed(2));
     }
 
     function addItem(menuName, menuPrice, id){
@@ -315,6 +364,11 @@
         loadOrderList();
     }
 
+    function deleteOrderProduct(index){
+        orderList.splice(index, 1);
+        loadOrderList();
+    }
+
     function addQuantity(index){
         orderList[index].quantity++;
         loadOrderList();
@@ -325,6 +379,11 @@
         if(quantity > 1){
             orderList[index].quantity--;
             loadOrderList();
+    }
+ 
+    ///////////////////////////
+    function insertOrders(id){
+        
     }
 }
 </script>

@@ -79,4 +79,7 @@ Route::controller(MenuCategoryController::class)->middleware('auth')->group(func
     Route::post('/menu-management/cagetory/destroy', 'destroy')->name('category-destroy');
 });
 
-Route::get('/pos', [PosController::class, 'index'])->name('pos');
+Route::controller(PosController::class)->middleware('auth')->group(function(){
+    Route::get('/pos', 'index')->name('pos');
+    Route::post('/pos/tables', 'getTable')->name('pos-table');
+});
