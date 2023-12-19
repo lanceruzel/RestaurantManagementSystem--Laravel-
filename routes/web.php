@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +64,7 @@ Route::controller(TableController::class)->middleware('auth')->group(function(){
     Route::post('table/store', 'store')->name('table-store');
     Route::post('table/edit', 'edit')->name('table-edit');
     Route::post('table/destroy', 'destroy')->name('table-destroy');
+    Route::post('table/updateAvailability', 'updateTableAvailability')->name('table-update-availability');
 });
 
 Route::controller(MenuController::class)->middleware('auth')->group(function(){
@@ -82,4 +85,13 @@ Route::controller(MenuCategoryController::class)->middleware('auth')->group(func
 Route::controller(PosController::class)->middleware('auth')->group(function(){
     Route::get('/pos', 'index')->name('pos');
     Route::post('/pos/tables', 'getTable')->name('pos-table');
+});
+
+Route::controller(OrderController::class)->middleware('auth')->group(function(){
+    Route::post('/order/store', 'store')->name('order-controller');
+});
+
+Route::controller(BillController::class)->middleware('auth')->group(function(){
+    Route::post('/bill/store', 'store')->name('bill-store');
+    Route::post('/bill/incomplete', 'incompleteBills')->name('bill-incomplete');
 });

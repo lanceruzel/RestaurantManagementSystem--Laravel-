@@ -50,4 +50,10 @@ class TableController extends Controller
 
         return Response()->json($table); 
     }
+
+    public function updateTableAvailability(Request $request){
+        //dd($request);
+        $table = Table::where('id', '=', $request->id)->update(['availability' => $request->availability]);
+        return Response()->json($table);
+    }
 }

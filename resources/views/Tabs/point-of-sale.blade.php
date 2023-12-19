@@ -14,7 +14,7 @@
     <div class="col-8 border-right border-2 border-secondary p-0 position-relative">
         <!-- Categories -->
         <div class="d-flex py-2 justify-content-center align-items-center border-bottom border-2 border-secondary overflow-auto px-3 position-absolute" style="max-width: 100%; min-width: 100%; height: 120px">
-            <button class="btn btn-info d-flex justify-content-center align-items-center m-1" style="height: 70px; width: 110px; min-width: 110px" onClick="changeShownMenu('all')">
+            <button class="btn btn-info d-flex justify-content-center align-items-center mx-2" style="height: 70px; width: 110px; min-width: 110px" onClick="changeShownMenu('all')">
                 All
             </button>
 
@@ -44,7 +44,7 @@
                 </div>
 
                 <div>
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#assignTable_modal">
+                    <button class="btn btn-primary" onClick="viewOrders()">
                         <i class="fas fa-fw fa-clipboard-list"></i>
                     </button>     
                 </div>
@@ -87,8 +87,8 @@
                 </button>
             </div>
 
-            <div class="modal-body" id="deleteModal_message">
-                <div class="d-flex flex-row flex-wrap overflow-y-scroll" id="tableContainer" style="height: 500px"></div>
+            <div class="modal-body" id="">
+                <div class="d-flex flex-wrap overflow-y-scroll" id="tableContainer" style="height: 500px"></div>
             </div>
         </div>
     </div>
@@ -104,7 +104,7 @@
                 </button>
             </div>
 
-            <div class="modal-body row" id="deleteModal_message">
+            <div class="modal-body row" id="">
                 <div class="col-5 d-flex align-items-start flex-column overflow-y-scroll overflow-x-hidden" id="tableContainerOrderEdit" style="height: 500px"></div>
 
                 <div class="col-7">
@@ -143,8 +143,8 @@
                 </button>
             </div>
 
-            <div class="modal-body row" id="modalAssignMsg">
-
+            <div class="modal-body">
+                <span id="modalAssignMsg"></span>
             </div>
 
             <div class="modal-footer">
@@ -180,6 +180,21 @@
 </div>
 
 <script>
+    let modalMessageContainer = $('#modal_assignMessage');
+    let modalMessage = $('#modalAssignMsg');
+
+    //Get User's Account Id
+    let accountID = {!! auth()->user()->id !!};
+
+    //Bill ID
+    let billID = 0;
+
+    // Load Menu
+    let menu = @json($menuList);
+
+    // Order Container
+    const orderList = [];
+
     $(document).ready(function(){
         $.ajaxSetup({
             headers:{
@@ -188,9 +203,162 @@
         });
     });
 
+    function viewOrders(){
+        $('#viewOrders_modal').modal('show');
+
+        loadIncompleteOrders();
+    }
+
+    function loadIncompleteOrders(){
+        let orderViewList = '';
+
+        $.ajax({
+            type:'POST',
+            url: '{{ route('bill-incomplete') }}',
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            data: null,
+            success: function(response){
+                $.each(response, function (i, bill) {
+                    const { tableName, availability, id, paymentStatus, orderStatus } = bill;
+
+                    const html = `<button class="btn btn-primary p-5 m-2 w-100 d-flex flex-column justify-content-center align-items-center" id="tableInformation-container" style="height: 100px; width: 130px">
+                        <div>
+                            ${ tableName }
+                        </div>
+
+                        <div id="tableStatus">
+                            Order #${ id }
+                        </div>
+
+                        <div>
+                            ${ (orderStatus === 'Pending' || paymentStatus === 'Pending') ? 'Incomplete' : 'Completed' }
+                        </div>
+                    </button>`;
+
+                    orderViewList += html;
+                });
+
+                $("#tableContainerOrderEdit").html(orderViewList);
+            },
+            error: function(response){
+                console.log(response);
+            }
+        });
+    }
+
+    function updateTableAvailability(id, availability){
+        let values = new FormData();
+
+        values.set('id', id);
+        values.set('availability', availability);
+
+        return $.ajax({
+            type:'POST',
+            url: '{{ route('table-update-availability') }}',
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            data: values,
+            success: function(response){
+                isSuccess = true;
+                
+            },
+            error: function(response){
+                console.log(response);
+                isSuccess = false;
+            }
+        });
+    }
+
+    function insertBill(accountID, tableID){
+        let values = new FormData();
+
+        values.set('accountID', accountID);
+        values.set('tableID', tableID);
+        values.set('total', getTotal());
+
+        return $.ajax({
+            type:'POST',
+            url: '{{ route('bill-store') }}',
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            data: values,
+            success: function(response){
+                billID = response.id;
+                isSuccess = true;
+            },
+            error: function(response){
+                console.log(response);
+            }
+        });
+    }
+
+    function insertOrders(){
+        let values = new FormData();
+
+        values.set('billID', billID);
+        values.set('orders', JSON.stringify(orderList));
+
+        return $.ajax({
+            type:'POST',
+            url: '{{ route('order-controller') }}',
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            data: values,
+            success: function(response){
+                //console.log(response);
+                isSuccess = true;
+            },
+            error: function(response){
+                console.log(response);
+                isSuccess = false;
+            }
+        });
+
+    }
+
+    function processOrder(tableID){
+        insertBill(accountID, tableID).done(function(){
+            insertOrders().done(function(){
+                updateTableAvailability(tableID, 'Unavailable').done(function(){
+                    $('#assignTable_modal').modal('hide');
+
+                    modalMessageContainer.modal('show');
+                    modalMessage.text('Order Successfully inserted.');
+
+                    orderList.length = 0;
+                    loadOrderList();
+                }).fail(function(data){
+                    modalMessageContainer.modal('show');
+                    modalMessage.text('There seem to be a problem updating this table.');
+                });
+            }).fail(function(){
+                console.log(data);
+                modalMessageContainer.modal('show');
+                modalMessage.text('There seem to be a problem inserting these orders.');
+            });
+        }).fail(function(data){
+            console.log(data);
+            modalMessageContainer.modal('show');
+            modalMessage.text('There seem to be a problem inserting this bill.');
+        });
+    }
 
     function loadTables(){
-        $('#assignTable_modal').modal('show');
+        if(orderList === null || orderList.length === 0){
+            modalMessageContainer.modal('show');
+            modalMessage.text('Order list is empty.');
+        }else{
+            $('#assignTable_modal').modal('show');
+        }
 
         let tableListView = '';
 
@@ -201,9 +369,9 @@
             dataType: 'json',
             success: function(response){
                 $.each(response, function (i, table) {
-                    const { tableName, availability } = table;
+                    const { tableName, availability, id } = table;
 
-                    const html = `<button class="btn p-5 m-2 d-flex flex-column flex-fill justify-content-center align-items-center btn-${(availability === 'Available') ? 'success ' : 'danger'}" id="tableInformation-container" style="height: 100px; width: 150px"">
+                    const html = `<button class="btn p-5 m-2 d-flex flex-column flex-fill justify-content-center align-items-center btn-${(availability === 'Available') ? 'success ' : 'danger disabled'}" id="tableInformation-container" style="height: 100px; width: 150px" onClick="processOrder(${ id })">
                         <div class="fw-bold text-white">
                             ${ tableName }
                         </div>
@@ -220,9 +388,8 @@
             }
         });
     }
-    //////////////////////////////
-    // Load Menu
-    let menu = @json($menuList);
+
+    changeShownMenu('all');
 
     function changeShownMenu(selectedID){
         let menuListView = '';
@@ -245,12 +412,11 @@
         $("#menu-container").html(menuListView);
     }
 
-    /////////////////////////////
+    //Modal Fix in full screen
     $(window).on('load', function () {
         $('.modal.fade').appendTo("#POS-container");
     });
 
-    //Modal Fix in full screen
     $('#fullscreen-toggler').on('click', function(){
         $('#fullscreen-toggler').toggleClass('fullscreen');
 
@@ -287,9 +453,6 @@
         }
     }
 
-    /////////////////////////////
-    const orderList = [];
-
     loadOrderList();
 
     function loadOrderList(){
@@ -323,19 +486,21 @@
         }
 
         $("#orderList-container").html(orderViewList);
-        getTotal();
+        updateTotalAmountText();
     }
 
     function getTotal(){
         let total = 0;
 
-        for(i = 0; i < orderList.length; i++){
-            let quantity = parseInt(orderList[i].quantity);
-            let price = parseFloat(orderList[i].menuPrice)
-            total += (quantity*price);
-        }
+        orderList.forEach(order => {
+            total += (parseInt(order['quantity']) * parseFloat(order['menuPrice']));
+        });
 
-        $('#totalAmount').text('₱' + (total).toFixed(2));
+        return total;
+    }
+
+    function updateTotalAmountText(){
+        $('#totalAmount').text('₱' + getTotal().toFixed(2));
     }
 
     function addItem(menuName, menuPrice, id){
@@ -355,10 +520,12 @@
                 id: id,
                 menuName: menuName,
                 menuPrice: menuPrice,
-                quantity: 1
+                quantity: 1,
+                total: menuPrice
             });
         }else{
-            orderList[index].quantity++;
+            ++orderList[index].quantity;
+            orderList[index].total = orderList[index].quantity * orderList[index].menuPrice;
         }
 
         loadOrderList();
@@ -377,13 +544,9 @@
     function minusQuantity(index){
         let quantity = orderList[index].quantity;
         if(quantity > 1){
-            orderList[index].quantity--;
+            --orderList[index].quantity;
+            orderList[index].total = orderList[index].quantity * orderList[index].menuPrice;
             loadOrderList();
-    }
- 
-    ///////////////////////////
-    function insertOrders(id){
-        
     }
 }
 </script>
