@@ -29,10 +29,12 @@
         <div class="d-flex flex-wrap p-4 justify-content-center overflow-auto position-absolute" style="max-height: calc(100% - 120px); min-height: calc(100% - 120px); bottom:0;">
             
             @foreach ($menuList as $menu)
-            <div class="border border-2 d-flex flex-column justify-content-center align-items-center m-2 lh-1" style="height: 90px; width: 150px; min-width: 150px">
-                <h5>{{ $menu->menuName }}</h5>
-                <span class="small">₱{{ $menu->menuPrice }}</span>
-            </div>
+                <button class="btn btn-primary d-flex flex-column justify-content-center align-items-center m-2 lh-1" 
+                style="height: 90px; width: 150px; min-width: 150px" 
+                onclick="addItem('{{ $menu->menuName }}', '{{ $menu->menuPrice }}', '{{ $menu->id }}')">
+                    <h5>{{ $menu->menuName }}</h5>
+                    <span class="small">₱{{ $menu->menuPrice }}</span>
+                </button>
             @endforeach
         </div>
     </div>
@@ -57,38 +59,24 @@
             </div>
         </div>
 
-        <div class="px-2 position-absolute" style="max-height: calc(100% - 100px); min-height: calc(100% - 150px); width: 100%; top:50;">
-            <table class="table">
+        <div class="px-2 position-absolute overflow-auto" style="max-height: calc(100% - 150px); min-height: calc(100% - 150px); width: 100%; top:50;">
+            <table class="table table-sm">
                 <thead>
                   <tr>
                     <th scope="col">Menu</th>
-                    <th scope="col">Quantity</th>
+                    <th scope="col" class="text-center">Quantity</th>
                     <th scope="col">Price</th>
+                    <th scope="col" class="text-center">Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <th>1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                  </tr>
-                  <tr>
-                    <th>2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                  </tr>
-                  <tr>
-                    <th>3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                  </tr>
+                <tbody id="orderList-container">                   
                 </tbody>
               </table>
         </div>
 
         <div class="border-top border-secondary border-2 d-flex align-items-center justify-content-between px-2 position-absolute" style="max-height: 100px; min-height: 100px; width: 100%; bottom: 0;">
             <div class="d-flex flex-row align-items-center justify-content-center pr-5 h-100">
-                <span class="align-middle mb-0 h-100 font-weight-bold">Total:  <span class="mb-0 h-100 font-weight-normal">₱80.00</span></span>  
+                <span class="align-middle mb-0 h-100 font-weight-bold">Total:  <span class="mb-0 h-100 font-weight-normal" id="totalAmount"></span></span>  
                 
             </div>
 
@@ -244,4 +232,99 @@
             document.msExitFullscreen();
         }
     }
+
+    function openTables(){
+        
+    }
+
+    /////////////////////////////
+    const orderList = [];
+
+    loadOrderList();
+
+    function getTotal(){
+        let total = 0;
+
+        for(i = 0; i < orderList.length; i++){
+            let quantity = parseInt(orderList[i].quantity);
+            let price = parseFloat(orderList[i].menuPrice)
+            total += (quantity*price);
+        }
+
+        $('#totalAmount').text('₱' + (total).toFixed(2));
+    }
+
+    function loadOrderList(){
+        console.log(orderList)
+        let orderViewList = '';
+
+        for (i = 0; i < orderList.length; i++) {
+            let {menuName, menuPrice, quantity} = orderList[i];
+
+            const html = `<tr>
+                        <td class="align-middle">${ menuName }</td>
+                        <td class="align-middle text-center">x${ quantity }</td>
+                        <td class="align-middle">₱${ menuPrice }</td>
+                        <td class="d-flex align-items-center justify-content-center">
+                            <div class="d-flex flex-column align-items-center justify-content-center pr-3 py-2">
+                                <button class="btn btn-sm btn-primary mb-2" onClick="addQuantity(${ i })">
+                                    +
+                                </button>
+
+                                <button class="btn btn-sm btn-secondary" onClick="minusQuantity(${ i })">
+                                    -
+                                </button>
+                            </div>
+
+                            <button class="btn btn-sm btn-danger">
+                                <i class="fas fa-fw fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>   `;
+
+            orderViewList += html;
+        }
+
+        $("#orderList-container").html(orderViewList);
+        getTotal();
+    }
+
+    function addItem(menuName, menuPrice, id){
+        let isExists = false;
+        let index;
+
+        //Check if item is already on the list
+        for(i = 0; i < orderList.length; i++){
+            if(orderList[i].menuName == menuName){
+                isExists = true;
+                index = i;
+            }
+        }
+
+        if(!isExists){
+            orderList.push({
+                id: id,
+                menuName: menuName,
+                menuPrice: menuPrice,
+                quantity: 1
+            });
+        }else{
+            orderList[index].quantity++;
+        }
+
+        loadOrderList();
+    }
+
+    function addQuantity(index){
+        orderList[index].quantity++;
+        loadOrderList();
+    }
+
+    function minusQuantity(index){
+        let quantity = orderList[index].quantity;
+        if(quantity > 1){
+            orderList[index].quantity--;
+            loadOrderList();
+    }
+}
 </script>
