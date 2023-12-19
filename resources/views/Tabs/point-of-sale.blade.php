@@ -95,10 +95,10 @@
 </div>
 
 <div class="modal fade bg-dark-transparent" id="viewOrders_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog" role="document" style="min-width: 700px">
         <div class="modal-content">
             <div class="modal-header ">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Order</h5>
+                <h5 class="modal-title" id="exampleModalLabel">View Order</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -120,7 +120,7 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="w-50">Menu</th>
-                                <th scope="col">Quantity</th>
+                                <th scope="col" class="text-center">Quantity</th>
                                 <th scope="col" class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -179,6 +179,63 @@
     </div>
 </div>
 
+<div class="modal fade bg-dark-transparent" id="modal_orderEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Quantity</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <form action="javascript:void(0)" id="form_EditQuantity" method="POST">
+                <div class="modal-body d-flex align-items-center justify-content-center" id="modalAssignMsg">
+                    <button class="btn btn-danger" type="button" onClick="quantityEdit('minus')">-</button>
+
+                    <div class="form-group">
+                        <label for="categoryName" class="mb-0">Quantity: </label>
+                        <input type="text" class="form-control text-center" readonly name="quantity" id="orderSelectedQuantity" style="width: 50px"
+                            placeholder="">            
+                        <div class="invalid-feedback" id="orderSelectedQuantity_invalid"></div>
+                    </div>   
+                    
+                    <button class="btn btn-primary" type="button" onClick="quantityEdit('add')">+</button>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bg-dark-transparent" id="modal_orderDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete Order</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <form action="javascript:void(0)" id="form_deleteQuantity" method="POST">
+                <div class="modal-body d-flex align-items-center justify-content-center" id="modalAssignMsg">
+                    You sure to delete this order?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Yes, delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     let modalMessageContainer = $('#modal_assignMessage');
     let modalMessage = $('#modalAssignMsg');
@@ -188,6 +245,9 @@
 
     //Bill ID
     let billID = 0;
+
+    //Selected Bill ID
+    let selectedBillID = 0;
 
     // Load Menu
     let menu = @json($menuList);
@@ -202,6 +262,120 @@
             }
         });
     });
+
+    function orderDelete(id){
+        $('#modal_orderDelete').modal('show');
+
+        $('#form_deleteQuantity').on('submit', function(e){
+            e.preventDefault();
+            
+            var formData = new FormData(this);
+            formData.set('id', id);
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('order-destroy') }}',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: (data) =>{
+                    getBillOrder(selectedBillID);
+                    $('#modal_orderDelete').modal('hide');
+                },
+                error: (data) =>{
+                    
+                }
+            });
+        });
+    }
+
+    function quantityEdit(mode){
+        let count = $('#orderSelectedQuantity').val();
+
+        if(mode === 'add'){
+            count++;
+        }else if(mode === 'minus' && count > 1){
+            count--;
+        }
+        
+        $('#orderSelectedQuantity').val(count);
+    }
+
+    function orderQuantityEdit(id, quantity){
+        let quantityField = $('#orderSelectedQuantity');
+
+        $('#modal_orderEdit').modal('show');
+
+        quantityField.val(quantity);
+
+        $('#form_EditQuantity').on('submit', function(e){
+            e.preventDefault();
+            
+            var formData = new FormData(this);
+            formData.set('id', id);
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('order-quantity') }}',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: (data) =>{
+                    getBillOrder(selectedBillID);
+                    $('#modal_orderEdit').modal('hide');
+                },
+                error: (data) =>{
+                    
+                }
+            });
+        });
+    }
+
+    function getBillOrder(id){
+        selectedBillID = id;
+        let orderViewList = '';
+
+        let values = new FormData();
+        values.set('id', id);
+
+        $.ajax({
+            type:'POST',
+            url: '{{ route('order-view') }}',
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            data: values,
+            success: function(response){
+                $.each(response, function (i, bill) {
+                    const { id, menuName, price, quantity, total } = bill;
+
+                    const html = `<tr>
+                                    <td>${ menuName }</td>
+                                    <td class="text-center">x${ quantity }</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-info btn-sm" onClick="orderQuantityEdit(${ id }, ${ quantity })">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+
+                                        <button class="btn btn-sm btn-danger" onClick="orderDelete(${ id })">
+                                            <i class="fas fa-fw fa-trash"></i>
+                                        </button>
+                                    </td>
+                                  </tr>`;
+
+                    orderViewList += html;
+                });
+
+                $("#editOrdersContainer").html(orderViewList);
+            },
+            error: function(response){
+                console.log(response);
+            }
+        });
+    }
 
     function viewOrders(){
         $('#viewOrders_modal').modal('show');
@@ -224,7 +398,7 @@
                 $.each(response, function (i, bill) {
                     const { tableName, availability, id, paymentStatus, orderStatus } = bill;
 
-                    const html = `<button class="btn btn-primary p-5 m-2 w-100 d-flex flex-column justify-content-center align-items-center" id="tableInformation-container" style="height: 100px; width: 130px">
+                    const html = `<button class="btn btn-primary p-5 m-2 w-100 d-flex flex-column justify-content-center align-items-center" id="tableInformation-container" style="height: 100px; width: 130px" onClick="getBillOrder(${ id })">
                         <div>
                             ${ tableName }
                         </div>

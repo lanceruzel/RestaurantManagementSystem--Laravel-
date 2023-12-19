@@ -89,6 +89,9 @@ Route::controller(PosController::class)->middleware('auth')->group(function(){
 
 Route::controller(OrderController::class)->middleware('auth')->group(function(){
     Route::post('/order/store', 'store')->name('order-controller');
+    Route::post('/order/view', 'viewOrders')->name('order-view');
+    Route::post('/order/updateQuantity', 'updateQuantity')->name('order-quantity');
+    Route::post('/order/destroy', 'destroy')->name('order-destroy');
 });
 
 Route::controller(BillController::class)->middleware('auth')->group(function(){

@@ -1,8 +1,8 @@
-<button class="btn btn-info btn-circle" onClick="showEditModal({{ $id }})">
+<button class="btn btn-info mr-2" onClick="showEditModal({{ $id }})">
     <i class="fas fa-pencil-alt"></i>
 </button>
 
-<button class="btn btn-danger btn-circle" onClick="showDestroyModel({{ $id }})">
+<button class="btn btn-danger" onClick="showDestroyModel({{ $id }})">
     <i class="fas fa-trash"></i>
 </button>
 
