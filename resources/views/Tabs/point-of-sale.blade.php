@@ -108,12 +108,14 @@
                 <div class="col-5 d-flex align-items-start flex-column overflow-y-scroll overflow-x-hidden" id="tableContainerOrderEdit" style="height: 500px"></div>
 
                 <div class="col-7">
-                    <div class="alert alert-warning w-100 d-none" role="alert" id="orderViewAlert"></div>
+                    <div class="alert alert-info w-100 d-none" role="alert" id="orderViewAlert">
+                        <span id="orderAlertMessage"></span>
+                    </div>
 
                     <div class="w-100 d-flex justify-content-between align-items-center">
                         <div class="fw-bold fs-4" id="tableNumberContainer"></div>
 
-                        <button class="btn btn-primary d-none" data-toggle="modal" data-target="#modal_billView" id="paymentOrderBtn">Payment</button>
+                        <button class="btn btn-primary mb-2 d-none" id="openBillBtn" onClick="openPaymentModal()">Payment</button>
                     </div>
 
                     <table class="table">
@@ -164,16 +166,53 @@
                 </button>
             </div>
 
-            <div class="modal-body row" id="modalAssignMsg">
+            <div class="modal-body">
                 <div class="alert alert-danger d-none" role="alert" id="payment_alert">
                     Payment is not enough.
                 </div>
-                <div id="billViewTableContainer"></div>
+                <div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">Product</th>
+                                <th scope="col" class="text-center">Price</th>
+                                <th scope="col" class="text-center">Quantity</th>
+                                <th scope="col" style="width: 30%;" class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="billViewTableContainer"></tbody>
+                        <caption>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right">Total:</td>
+                                <td class="text-center">₱<span id="totalPrice"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right">Payment:</td>
+                                <td>
+                                    <input type="number" id="amountEntered" class="form-control text-center" placeholder="Amount" onchange="getChange();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td class=" text-right">Change:
+                                </td>
+                                <td id="change" class="text-center">₱0.00</td>
+                            </tr>
+                        </caption>
+                    </table>
+                </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="printReceiptBtn">Print Receipt</button>
+                <button type="button" class="btn btn-primary disabled" id="printReceiptBtn" onClick="payout()">Print Receipt</button>
             </div>
         </div>
     </div>
@@ -193,8 +232,7 @@
                 <div class="modal-body d-flex align-items-center justify-content-center" id="modalAssignMsg">
                     <button class="btn btn-danger" type="button" onClick="quantityEdit('minus')">-</button>
 
-                    <div class="form-group">
-                        <label for="categoryName" class="mb-0">Quantity: </label>
+                    <div class="form-group mb-0 px-2">
                         <input type="text" class="form-control text-center" readonly name="quantity" id="orderSelectedQuantity" style="width: 50px"
                             placeholder="">            
                         <div class="invalid-feedback" id="orderSelectedQuantity_invalid"></div>
@@ -237,11 +275,22 @@
 </div>
 
 <script>
+    $(document).ready(function(){
+        $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    });
+
     let modalMessageContainer = $('#modal_assignMessage');
     let modalMessage = $('#modalAssignMsg');
 
     //Get User's Account Id
     let accountID = {!! auth()->user()->id !!};
+
+    //Total Amount of Selected Bill Order
+    let total = 0;
 
     //Bill ID
     let billID = 0;
@@ -254,14 +303,106 @@
 
     // Order Container
     const orderList = [];
+    /////////////////////////////////////////////////////
+    function generatePDF(){
 
-    $(document).ready(function(){
-        $.ajaxSetup({
-            headers:{
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+
+    function payout(){
+        if($('#printReceiptBtn').hasClass('disabled')){
+            return;
+        }
+
+        var formData = new FormData();
+        formData.set('id', selectedBillID);
+        formData.set('paymentStatus', 'Completed');
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ route('bill-update-payment') }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: (data) =>{
+                $('#modal_billView').modal('hide');
+
+                modalMessageContainer.modal('show');
+                modalMessage.text('Success');
+            },
+            error: (data) =>{
+                console.log(data);
             }
         });
-    });
+    }
+
+    function getChange() {
+        const payoutBtn = $('#printReceiptBtn');
+        change = 0;
+        let payment = $('#amountEntered').val();
+        let total = parseFloat($('#totalPrice').text());
+        change = (payment - total);
+
+        $('#change').text('₱' + change.toFixed(2));
+
+        if (change < 0) {
+            $('#change').css('color', 'red');
+
+            if(!payoutBtn.hasClass('disabled')){
+                payoutBtn.addClass('disabled');
+            }
+        } else {
+            $('#change').css('color', 'black');
+
+            if(payoutBtn.hasClass('disabled')){
+                payoutBtn.removeClass('disabled');
+            }
+        }
+    }
+
+    function openPaymentModal(){
+        $('#viewOrders_modal').modal('hide');
+
+        let formData = new FormData();
+        formData.set('id', selectedBillID);
+
+        let orderViewList = '';
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ route('order-view') }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: (data) =>{
+                $('#modal_billView').modal('show');
+
+                $.each(data, function (i, bill) {
+                    const { id, menuName, price, quantity } = bill;
+
+                    let menuTotal = parseFloat(price) * parseFloat(quantity);
+                    total += menuTotal;
+
+                    const html = `<tr>
+                                    <td>${ menuName }</td>
+                                    <td class="text-center">₱${ price.toFixed(2) }</td>
+                                    <td class="text-center">x${ quantity }</td>
+                                    <td class="text-center">₱${ menuTotal.toFixed(2) }</td>
+                                </tr>`;
+
+                        orderViewList += html;
+                });
+
+                $('#totalPrice').text(total);
+                $("#billViewTableContainer").html(orderViewList);
+                $('#printReceiptBtn').attr('data-id', selectedBillID);
+            },
+            error: (data) =>{
+                
+            }
+        });
+    }
 
     function orderDelete(id){
         $('#modal_orderDelete').modal('show');
@@ -333,7 +474,7 @@
         });
     }
 
-    function getBillOrder(id){
+    function getBillOrder(id, orderStatus, paymentStatus){
         selectedBillID = id;
         let orderViewList = '';
 
@@ -356,11 +497,11 @@
                                     <td>${ menuName }</td>
                                     <td class="text-center">x${ quantity }</td>
                                     <td class="text-center">
-                                        <button class="btn btn-info btn-sm" onClick="orderQuantityEdit(${ id }, ${ quantity })">
+                                        <button class="btn btn-info btn-sm" ${ (paymentStatus === 'Completed' || orderStatus === 'Completed' || orderStatus === 'Processing') ? 'disabled' : '' } onClick="orderQuantityEdit(${ id }, ${ quantity })">
                                             <i class="fas fa-pencil-alt"></i>
                                         </button>
 
-                                        <button class="btn btn-sm btn-danger" onClick="orderDelete(${ id })">
+                                        <button class="btn btn-sm btn-danger" ${ (paymentStatus === 'Completed' || orderStatus === 'Completed' || orderStatus === 'Processing') ? 'disabled' : '' } onClick="orderDelete(${ id })">
                                             <i class="fas fa-fw fa-trash"></i>
                                         </button>
                                     </td>
@@ -373,6 +514,42 @@
             },
             error: function(response){
                 console.log(response);
+            }
+        }).done(function(){
+            let orderViewAlert = $('#orderViewAlert');
+            const paymentBtn = $('#openBillBtn');
+            let message = $('#orderAlertMessage');
+
+            orderViewAlert.addClass('d-none');
+            paymentBtn.addClass('d-none');
+
+            if(paymentStatus === 'Completed' && orderStatus === 'Pending'){
+                paymentBtn.addClass('d-none');
+                orderViewAlert.removeClass('d-none');
+                message.text('This order is still pending.');
+            }
+
+            if(paymentStatus === 'Completed' && orderStatus === 'Processing'){
+                paymentBtn.addClass('d-none');
+                orderViewAlert.removeClass('d-none');
+                message.text('This order cannot be altered while it is being processed and this order has already been paid for.');
+            }
+
+            if(paymentStatus === 'Pending' && orderStatus === 'Pending'){
+                paymentBtn.addClass('d-none');
+                orderViewAlert.addClass('d-none');
+            }
+
+            if(paymentStatus === 'Pending' && orderStatus === 'Processing'){
+                paymentBtn.removeClass('d-none');
+                orderViewAlert.removeClass('d-none');
+                message.text('This order is currently being processed and cannot be changed.');
+            }
+
+            if(paymentStatus === 'Pending' && orderStatus === 'Completed'){
+                paymentBtn.removeClass('d-none');
+                orderViewAlert.removeClass('d-none');
+                message.text('This order has been fulfilled, but it has not yet been paid for.');
             }
         });
     }
@@ -398,7 +575,7 @@
                 $.each(response, function (i, bill) {
                     const { tableName, availability, id, paymentStatus, orderStatus } = bill;
 
-                    const html = `<button class="btn btn-primary p-5 m-2 w-100 d-flex flex-column justify-content-center align-items-center" id="tableInformation-container" style="height: 100px; width: 130px" onClick="getBillOrder(${ id })">
+                    const html = `<button class="btn btn-primary p-5 m-2 w-100 d-flex flex-column justify-content-center align-items-center" id="tableInformation-container" style="height: 140px; width: 130px" onClick="getBillOrder(${ id }, '${ orderStatus }', '${ paymentStatus }')">
                         <div>
                             ${ tableName }
                         </div>
@@ -408,7 +585,11 @@
                         </div>
 
                         <div>
-                            ${ (orderStatus === 'Pending' || paymentStatus === 'Pending') ? 'Incomplete' : 'Completed' }
+                            Payment: ${ paymentStatus  }
+                        </div>
+
+                        <div>
+                            Order: ${ orderStatus  }
                         </div>
                     </button>`;
 

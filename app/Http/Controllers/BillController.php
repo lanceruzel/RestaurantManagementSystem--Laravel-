@@ -29,4 +29,10 @@ class BillController extends Controller
 
         return Response()->json($bill);
     }
+
+    public function updatePayment(Request $request){
+        $bill = Bill::where('id', '=', $request->id)->update(['paymentStatus' => $request->paymentStatus]);
+
+        return Response()->json($bill);
+    }
 }

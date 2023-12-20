@@ -97,4 +97,5 @@ Route::controller(OrderController::class)->middleware('auth')->group(function(){
 Route::controller(BillController::class)->middleware('auth')->group(function(){
     Route::post('/bill/store', 'store')->name('bill-store');
     Route::post('/bill/incomplete', 'incompleteBills')->name('bill-incomplete');
+    Route::post('/bill/updatePayment', 'updatePayment')->name('bill-update-payment');
 });
