@@ -9,12 +9,12 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <table class="table table-bordered" id="bill_table" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>Assigned Table</th>
                         <th>Order Number</th>
-                        <th>Order Dater</th>
+                        <th>Order Date</th>
                         <th>Cashier</th>
                         <th>Total</th>
                         <th>Order Status</th>
@@ -53,11 +53,11 @@
 </div>
 
 <!--Edit Modal-->
-<div class="modal fade" id="billViewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal_billView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Update Account</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Bill View</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -71,88 +71,45 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Product</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col" style="width: 30%;">Total</th>
+                            <th scope="col" class="text-center">Product</th>
+                            <th scope="col" class="text-center">Price</th>
+                            <th scope="col" class="text-center">Quantity</th>
+                            <th scope="col" style="width: 30%;" class="text-center">Total</th>
                         </tr>
                     </thead>
-
-                    <tbody>
-                        <tr>
-                            <td>Test Product 1</td>
-                            <td>P75.00</td>
-                            <td>2</td>
-                            <td>P150.00</td>
-                        </tr>
-
-                        <tr>
-                            <td>Test Product 1</td>
-                            <td>P75.00</td>
-                            <td>2</td>
-                            <td>P150.00</td>
-                        </tr>
-
-                        <tr>
-                            <td>Test Product 1dsdsd</td>
-                            <td>P75.00</td>
-                            <td>2</td>
-                            <td>P150.00</td>
-                        </tr>
-
-                        <tr>
-                            <td>Test Product 1dsdsd</td>
-                            <td>P75.00</td>
-                            <td>2</td>
-                            <td>P150.00</td>
-                        </tr>
-
-                        <tr>
-                            <td>Test Product 1dsdsd</td>
-                            <td>P75.00</td>
-                            <td>2</td>
-                            <td>P150.00</td>
-                        </tr>
-
-                        <tr>
-                            <td>Test Product 1dsdsd</td>
-                            <td>P75.00</td>
-                            <td>2</td>
-                            <td>P150.00</td>
-                        </tr>
-                    </tbody>
-
+                    <tbody id="billViewTableContainer"></tbody>
                     <caption>
                         <tr>
                             <td></td>
                             <td></td>
-                            <td class="text-end">Total</td>
-                            <td>₱<span id="totalPrice" colspan="2">232</span></td>
+                            <td class="text-right">Total:</td>
+                            <td class="text-center">₱<span id="totalPrice"></span></td>
                         </tr>
 
                         <tr>
                             <td></td>
                             <td></td>
-                            <td class="text-end">Payment</td>
-                            <td colspan="2">
-                                <input type="text" class="form-control bg-light border-0 small" id="amountEntered" placeholder="Bill..." onchange="getChange();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"
-                                        aria-label="Search" aria-describedby="basic-addon2">
+                            <td class="text-right">Payment:</td>
+                            <td>
+                                <input type="number" id="amountEntered" class="form-control text-center" placeholder="Amount" onchange="getChange();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
                             </td>
                         </tr>
-                
+
                         <tr>
                             <td></td>
                             <td></td>
-                            <td class="text-end">Change</td>
-                            <td id="change" colspan="3">₱0.00</td>
+                            <td class=" text-right">Change:
+                            </td>
+                            <td id="change" class="text-center">₱0.00</td>
                         </tr>
                     </caption>
                 </table>
+                    
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="#">Comfirm Payment</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary disabled" id="printReceiptBtn" onClick="payout()">Confirm Payment</button>
             </div>
         </div>
     </div>
@@ -160,7 +117,23 @@
 
 <script>
     $(document).ready(function() {
-        $('#dataTable').DataTable();
+        //bill data table
+        $('#bill_table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('bill-orders') }}',
+            columns:[
+                {data: 'tableName', name: 'tableName'},
+                {data: 'id', name: 'id'},
+                {data: 'created_at', name: 'created_at'},
+                {data: 'fullname', name: 'fullname'},
+                {data: 'totalFormatted', name: 'totatotalFormattedl'},
+                {data: 'orderStatus', name: 'orderStatus'},
+                {data: 'paymentStatus', name: 'paymentStatus'},
+                {data: 'action', name: 'action', orderable: false}
+            ],
+            order:[[0, 'desc']]
+        });
     });
 
     function getChange(){

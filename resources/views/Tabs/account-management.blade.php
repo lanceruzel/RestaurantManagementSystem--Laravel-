@@ -229,7 +229,6 @@
         });
     });
 
-    
     $('#form_editAccountInformation').on('submit', function(e){
         e.preventDefault();
 
@@ -258,7 +257,6 @@
             }
         });
     });
-    
     
     $('#form_editPersonalInformation').on('submit', function(e){
         e.preventDefault();

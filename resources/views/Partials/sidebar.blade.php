@@ -42,7 +42,7 @@
 
     <!-- Nav Item - Bill Management -->
     <li class="nav-item">
-        <a class="nav-link" href="/bill-management">
+        <a class="nav-link" href="{{ route('bill-management') }}">
             <i class="fas fa-fw fa-money-bill-wave"></i>
             <span>Bill Management</span></a>
     </li>
@@ -63,7 +63,7 @@
 
     <!-- Nav Item - Orders View -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('poss') }}">
+        <a class="nav-link" href="{{ route('ordersView') }}">
             <i class="fas fa-fw fa-concierge-bell"></i>
             <span>Orders View</span></a>
     </li>

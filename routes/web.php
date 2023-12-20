@@ -33,23 +33,15 @@ Route::get('/register', function(){
 })->name('register');
 
 Route::controller(AccountController::class)->group(function(){
-    Route::post('/account/register', [AccountController::class, 'register']);
-    Route::post('/account/login', [AccountController::class, 'login']);
-    Route::post('/account/logout', [AccountController::class, 'logout']);
-    Route::post('/account/update', [AccountController::class, 'update']);
+    Route::post('/account/register', 'register');
+    Route::post('/account/login', 'login');
+    Route::post('/account/logout', 'logout');
+    Route::post('/account/update', 'update');
 });
 
 Route::get('/inventory-management', function(){
     return view('index');
 })->name('inventoryManagement');
-
-Route::get('/bill-management', function(){
-    return view('index');
-})->name('billManagement');
-
-Route::get('/poss', function(){
-    return view('index');
-})->name('poss');
 
 Route::controller(AccountController::class)->middleware('auth')->group(function(){
     Route::get('/account-management', 'index')->name('account-management');
@@ -95,7 +87,13 @@ Route::controller(OrderController::class)->middleware('auth')->group(function(){
 });
 
 Route::controller(BillController::class)->middleware('auth')->group(function(){
-    Route::post('/bill/store', 'store')->name('bill-store');
-    Route::post('/bill/incomplete', 'incompleteBills')->name('bill-incomplete');
-    Route::post('/bill/updatePayment', 'updatePayment')->name('bill-update-payment');
+    Route::get('/bill-management', 'index')->name('bill-management');
+    Route::post('/bill-management/store', 'store')->name('bill-store');
+    Route::post('/bill-management/incomplete', 'incompleteBills')->name('bill-incomplete');
+    Route::post('/bill-management/updatePayment', 'updatePayment')->name('bill-update-payment');
+    Route::post('/bill-management/ordersViewBill', 'ordersViewBill')->name('bill-orders');
 });
+
+Route::get('/orderView', function(){
+    return view('index');
+})->name('ordersView');

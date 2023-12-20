@@ -156,10 +156,10 @@
     </div>
 </div>
 
-<div class="modal fade bg-dark-transparent" id="modal_billView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="modal_billView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header ">
+            <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Bill View</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
@@ -170,49 +170,49 @@
                 <div class="alert alert-danger d-none" role="alert" id="payment_alert">
                     Payment is not enough.
                 </div>
-                <div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="text-center">Product</th>
-                                <th scope="col" class="text-center">Price</th>
-                                <th scope="col" class="text-center">Quantity</th>
-                                <th scope="col" style="width: 30%;" class="text-center">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="billViewTableContainer"></tbody>
-                        <caption>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td class="text-right">Total:</td>
-                                <td class="text-center">₱<span id="totalPrice"></span></td>
-                            </tr>
 
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td class="text-right">Payment:</td>
-                                <td>
-                                    <input type="number" id="amountEntered" class="form-control text-center" placeholder="Amount" onchange="getChange();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
-                                </td>
-                            </tr>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Product</th>
+                            <th scope="col" class="text-center">Price</th>
+                            <th scope="col" class="text-center">Quantity</th>
+                            <th scope="col" style="width: 30%;" class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="billViewTableContainer"></tbody>
+                    <caption>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="text-right">Total:</td>
+                            <td class="text-center">₱<span id="totalPrice"></span></td>
+                        </tr>
 
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td class=" text-right">Change:
-                                </td>
-                                <td id="change" class="text-center">₱0.00</td>
-                            </tr>
-                        </caption>
-                    </table>
-                </div>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="text-right">Payment:</td>
+                            <td>
+                                <input type="number" id="amountEntered" class="form-control text-center" placeholder="Amount" onchange="getChange();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class=" text-right">Change:
+                            </td>
+                            <td id="change" class="text-center">₱0.00</td>
+                        </tr>
+                    </caption>
+                </table>
+                    
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary disabled" id="printReceiptBtn" onClick="payout()">Print Receipt</button>
+                <button type="button" class="btn btn-primary disabled" id="printReceiptBtn" onClick="payout()">Confirm Payment</button>
             </div>
         </div>
     </div>
@@ -352,7 +352,7 @@
                 payoutBtn.addClass('disabled');
             }
         } else {
-            $('#change').css('color', 'black');
+            $('#change').css('color', '#858796');
 
             if(payoutBtn.hasClass('disabled')){
                 payoutBtn.removeClass('disabled');
@@ -399,7 +399,7 @@
                 $('#printReceiptBtn').attr('data-id', selectedBillID);
             },
             error: (data) =>{
-                
+                console.log(data);
             }
         });
     }
@@ -536,7 +536,7 @@
             }
 
             if(paymentStatus === 'Pending' && orderStatus === 'Pending'){
-                paymentBtn.addClass('d-none');
+                paymentBtn.removeClass('d-none');
                 orderViewAlert.addClass('d-none');
             }
 

@@ -28,12 +28,12 @@
                         @include('tabs.menu-management')
                     @elseif(request()->routeIS('inventoryManagement'))
                         @include('tabs.inventory-management')
-                    @elseif(request()->routeIS('billManagement'))
+                    @elseif(request()->routeIS('bill-management'))
                         @include('tabs.bill-management')
                     @elseif(request()->routeIS('pos'))
                         @include('tabs.point-of-sale')
-                    @elseif(request()->routeIS('poss'))
-                        @include('tabs.pos')
+                    @elseif(request()->routeIS('ordersView'))
+                        @include('tabs.orders-view')
                     @else
                         @include('tabs.dashboard')
                     @endif
