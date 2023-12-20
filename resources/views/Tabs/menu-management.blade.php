@@ -286,7 +286,7 @@
             contentType: false,
             processData: false,
             success: (data) =>{
-                menuAddEditModal.modal('toggle');
+                menuAddEditModal.modal('hide');
 
                 updateDataTable('#menu_table');
                 showAlert('success','Successfully Added/Updated.');
@@ -387,9 +387,8 @@
             success: function(response){
 
                 if(tableID === 'menu_table'){
-                    //Menu
-                    menuAddEditModal.modal('show');
-                    menuModalTitle.text('Add Menu');
+                    //Menu 
+                    menuModalTitle.text('Update Menu');
                     menuModalBtn.text('Update');
  
                     menuID.val(response.id);
@@ -403,6 +402,8 @@
                     }else{
                         $('#menu_unavailable').prop('checked', true);
                     }
+
+                    menuAddEditModal.modal('show');
                 }else{
                     //Category
                     categoryModalBtn.text('Update');

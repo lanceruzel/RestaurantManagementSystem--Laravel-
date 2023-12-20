@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</a>
                     <button class="btn btn-primary" type="submit" id="btn_addEditSubmit">Update</button>
                 </div>
             </form>
@@ -144,7 +144,6 @@
 
     let tableNameInvalid = $('#tableName_invalid');
     let tableCapacityInvalid = $('#tableCapacity_invalid');
-
 
     $(document).ready(function() {
         $.ajaxSetup({

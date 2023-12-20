@@ -29,7 +29,29 @@
     </div>
 </div>
 
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="confimationdialogmodal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Order Update Confirmation</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            </div>
+            <div class="modal-body" id="confirmationMsg">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmationBtn">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    let confirmationModal = $('#confirmationModal');
+    let confirmationMessage = $('#confirmationMsg');
+    let confirmationBtn = $('#confirmationBtn');
+
     $(document).ready(function() {
         $.ajaxSetup({
             headers:{
@@ -89,7 +111,7 @@
                                         </table>
 
                                         <div class="mt-4 w-100 d-flex align-items-center justify-content-center">
-                                            <button class="btn btn-primary w-75">${ (orderStatus === 'Pending') ? 'Accept Order' : 'Mark as complete' }</button>
+                                            <button class="btn btn-primary w-75" onClick="updateOrderStatus(${ id }, '${ (orderStatus === 'Pending') ? 'Processing' : 'Completed' }')">${ (orderStatus === 'Pending') ? 'Accept Order' : 'Mark as complete' }</button>
                                         </div>
                                     </div>
                                 </div>`;
@@ -102,6 +124,41 @@
             error: (data) =>{
                 console.log(data);
             }
+        });
+    }
+
+    function updateOrderStatus(id, status){
+        confirmationModal.modal('show');
+        if(status === 'Processing'){
+            confirmationMessage.text('Accept this order?')
+        }else{
+            confirmationMessage.text('Mark this order as completed?')
+        }
+
+        confirmationBtn.on('click', function(){
+            confirmationModal.modal('hide');
+
+            let values = new FormData();
+
+            values.set('id', id);
+            values.set('orderStatus', status);
+
+            $.ajax({
+                type:'POST',
+                url: '{{ route('bill-update-order') }}',
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                data: values,
+                success: function(response){
+                    loadOrders('Pending', '#pendingOrdersContainer');
+                    loadOrders('Processing', '#processingOrdersContainer');
+                },
+                error: function(response){
+                    console.log(response);
+                }
+            });
         });
     }
 </script>

@@ -136,7 +136,7 @@
 </div>
 
 <div class="modal fade bg-dark-transparent" id="modal_assignMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header ">
                 <h5 class="modal-title" id="exampleModalLabel">Information</h5>
@@ -146,7 +146,9 @@
             </div>
 
             <div class="modal-body">
-                <span id="modalAssignMsg"></span>
+                <div class="alert alert-success" role="alert">
+                    <span id="modalAssignMsg"></span>
+                  </div>
             </div>
 
             <div class="modal-footer">
@@ -156,7 +158,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal_billView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade bg-dark-transparent" id="modal_billView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -229,7 +231,7 @@
             </div>
 
             <form action="javascript:void(0)" id="form_EditQuantity" method="POST">
-                <div class="modal-body d-flex align-items-center justify-content-center" id="modalAssignMsg">
+                <div class="modal-body d-flex align-items-center justify-content-center">
                     <button class="btn btn-danger" type="button" onClick="quantityEdit('minus')">-</button>
 
                     <div class="form-group mb-0 px-2">
@@ -261,7 +263,7 @@
             </div>
 
             <form action="javascript:void(0)" id="form_deleteQuantity" method="POST">
-                <div class="modal-body d-flex align-items-center justify-content-center" id="modalAssignMsg">
+                <div class="modal-body d-flex align-items-center justify-content-center">
                     You sure to delete this order?
                 </div>
 
@@ -297,6 +299,8 @@
 
     //Selected Bill ID
     let selectedBillID = 0;
+    let selectedOrderStatus = '';
+    let selectedPaymentStatus = '';
 
     // Load Menu
     let menu = @json($menuList);
@@ -464,11 +468,11 @@
                 contentType: false,
                 processData: false,
                 success: (data) =>{
-                    getBillOrder(selectedBillID);
+                    getBillOrder(selectedBillID,selectedOrderStatus,selectedPaymentStatus);
                     $('#modal_orderEdit').modal('hide');
                 },
                 error: (data) =>{
-                    
+                    console.log(data);
                 }
             });
         });
@@ -476,6 +480,8 @@
 
     function getBillOrder(id, orderStatus, paymentStatus){
         selectedBillID = id;
+        selectedOrderStatus = orderStatus;
+        selectedPaymentStatus = paymentStatus;
         let orderViewList = '';
 
         let values = new FormData();

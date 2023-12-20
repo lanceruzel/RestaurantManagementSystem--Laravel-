@@ -35,7 +35,7 @@ class AccountController extends Controller
         $account = DB::table('account')
         ->select('account.email', 'account.role', 'employeeinformation.*')
         ->join('employeeinformation', 'employeeinformation.accountID', '=', 'account.id')
-        ->where('employeeinformation.id', '=', $request->id)
+        ->where('employeeinformation.accountID', '=', $request->id)
         ->first();
 
         return Response()->json($account);

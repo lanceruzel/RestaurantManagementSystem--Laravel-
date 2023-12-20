@@ -121,7 +121,7 @@
         $('#bill_table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{{ route('bill-orders') }}',
+            ajax: '{{ route('bill-management') }}',
             columns:[
                 {data: 'tableName', name: 'tableName'},
                 {data: 'id', name: 'id'},

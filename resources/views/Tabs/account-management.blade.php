@@ -108,7 +108,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-toggle="modal" data-target="#updateAccountInformationModal">Change account information</button>
+                    <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#updateAccountInformationModal">Change account information</button>
                     <button class="btn btn-primary" type="submit" id="btn_updateEmployeeInformation">Update</button>
                 </div>
             </form>
@@ -335,7 +335,6 @@
             data: { id: id },
             dataType: 'json',
             success: function(response){
-                $('#editAccountModal').modal('show');
                 $('.id').val(response.accountID);
                 $('#modalEdit_firstName').val(response.firstName);
                 $('#modalEdit_middleName').val(response.middleName);
@@ -346,6 +345,7 @@
                 $('#modalEdit_contact').val(response.contact);
                 $('#modalEdit_email').val(response.email);
                 $('#modalEdit_role').val(response.role);
+                $('#editAccountModal').modal('show');
             }
         });
     }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bill;
-use App\Models\Order;
+use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
@@ -60,10 +60,11 @@ class BillController extends Controller
     }
 
     public function incompleteBills(){
-        //$bill = Bill::where('orderStatus', '<>', 'Completed')->where('paymentStatus', '<>', 'Completed')->get();
         $bill = DB::table('bill')
         ->select('*', 'tables.tableName', 'bill.id as id')
         ->leftJoin('tables', 'tables.id', '=', 'bill.assignedTable')
+        ->where('orderStatus', '<>', 'Completed')
+        ->where('paymentStatus', '<>', 'Completed')
         ->get();
 
         return Response()->json($bill);
@@ -82,6 +83,24 @@ class BillController extends Controller
     public function updatePayment(Request $request){
         $bill = Bill::where('id', '=', $request->id)->update(['paymentStatus' => $request->paymentStatus]);
 
+        $this->checkTableAvailability($request->id);
+
         return Response()->json($bill);
+    }
+
+    public function updateOrder(Request $request){
+        $bill = Bill::where('id', '=', $request->id)->update(['orderStatus' => $request->orderStatus]);
+
+        $this->checkTableAvailability($request->id);
+
+        return Response()->json($bill);
+    }
+
+    public function checkTableAvailability($id){
+        $bill = Bill::where('id', '=', $id)->first();
+
+        if($bill->orderStatus === 'Completed' && $bill->paymentStatus === 'Completed'){
+            Table::where('id', '=', $bill->assignedTable)->update(['availability' => 'Available']);
+        }
     }
 }

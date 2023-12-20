@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bill;
 use App\Models\Table;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
@@ -52,7 +53,6 @@ class TableController extends Controller
     }
 
     public function updateTableAvailability(Request $request){
-        //dd($request);
         $table = Table::where('id', '=', $request->id)->update(['availability' => $request->availability]);
         return Response()->json($table);
     }

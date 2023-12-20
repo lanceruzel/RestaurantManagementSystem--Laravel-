@@ -91,6 +91,7 @@ Route::controller(BillController::class)->middleware('auth')->group(function(){
     Route::post('/bill-management/store', 'store')->name('bill-store');
     Route::post('/bill-management/incomplete', 'incompleteBills')->name('bill-incomplete');
     Route::post('/bill-management/updatePayment', 'updatePayment')->name('bill-update-payment');
+    Route::post('/bill-management/updateOrder', 'updateOrder')->name('bill-update-order');
     Route::post('/bill-management/ordersViewBill', 'ordersViewBill')->name('bill-orders');
 });
 

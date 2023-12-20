@@ -1,5 +1,31 @@
 @include('partials.header')
 
+<style>
+    .loader {
+        width: 38px;
+        height: 38px;
+        border: 5px solid #858796;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    } 
+
+    .bg-dark-transparent {
+        background-color: rgba(52, 58, 64, 0.70) !important;
+    }
+</style>
+
 <body id="page-top" data-barba="wrapper">
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -76,9 +102,22 @@
             </div>
         </div>
     </div>
+
+    <!-- Loading Modal-->
+    <div class="modal fade bg-dark-transparent" id="loading_modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body d-flex align-items-center justify-content-center" id="modalAssignMsg">
+                    <span class="loader mr-2"></span>Processing....
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 <script>
+    let loadingModal = $('#loading_modal');
+
     function showAlert(type, message){
         let dom = $('#alert');
 
@@ -119,6 +158,14 @@
         var oTable = $(datatable).dataTable();
         oTable.fnDraw(false);
     }
+
+    $(document).ajaxStart(function() {
+        loadingModal.modal('show');
+    }).ajaxStop(function() {
+        setTimeout(function(){
+            loadingModal.modal('hide');
+        }, 300);
+    });
 </script>
 
 </html>
