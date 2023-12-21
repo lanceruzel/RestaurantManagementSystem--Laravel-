@@ -136,8 +136,30 @@ class AccountController extends Controller
         return redirect('/');
     }
 
-    function getTime(){
-        date_default_timezone_set('Asia/Manila');
-        return date("Y-m-d");
+    public function changeEmail(Request $request){
+        $validated = $request->validate([
+            "email" => ['required', 'min:3', 'email', Rule::unique('account', 'email')],
+        ]);
+
+        $information = Account::where('id', '=', $request->id)->update(['email' => $validated['email']]);
+
+        return Response()->json($information);
+    }
+
+    public function changePassword(Request $request){
+        $validated = $request->validate([
+            "password" => 'required|confirmed|min:5',
+            'current_password' => ['required','string','min:5'],
+        ]);
+
+        $currentPasswordStatus = Hash::check($validated['current_password'], auth()->user()->password);
+
+        if($currentPasswordStatus){
+            $validated['password'] = bcrypt($validated['password']);
+            $information = Account::where('id', '=', $request->id)->update(['password' => $validated['password']]);
+            return Response()->json($information);
+        }else{
+            return Response()->json(['old_pass_error' => 'Current Password does not match with Old Password']);
+        }
     }
 }

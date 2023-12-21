@@ -22,6 +22,7 @@ class DashboardController extends Controller
 
                 $result = DB::table('bill')
                     ->select(DB::raw('SUM(total) as total'), DB::raw('DAYNAME(created_at) as day'))
+                    ->where('paymentStatus' , '=', 'completed')
                     ->whereDate('created_at', $date)
                     ->groupBy(DB::raw('DAYNAME(created_at)'))
                     ->get();
@@ -30,6 +31,7 @@ class DashboardController extends Controller
 
                 $result = DB::table('bill')
                     ->select(DB::raw('SUM(total) as total'), DB::raw('DAYNAME(created_at) as day'))
+                    ->where('paymentStatus' , '=', 'completed')
                     ->whereDate('created_at', '=', DB::raw("SUBDATE('" . $date . "', INTERVAL " . $i . " DAY)"))
                     ->groupBy(DB::raw('DAYNAME(created_at)'))
                     ->get();
@@ -59,17 +61,21 @@ class DashboardController extends Controller
         DB::statement("SET time_zone = '+08:00'");
         
         $month = Bill::whereRaw('MONTH(created_at) = MONTH(CURRENT_DATE())')
+            ->where('paymentStatus' , '=', 'completed')
             ->whereRaw('YEAR(created_at) = YEAR(CURRENT_DATE())')
             ->sum('total');
 
         $today = Bill::whereRaw('DAYOFYEAR(created_at) = DAYOFYEAR(CURRENT_DATE())')
+            ->where('paymentStatus' , '=', 'completed')
             ->sum('total');
 
         $week = Bill::whereRaw('YEAR(created_at) = YEAR(CURRENT_DATE())')
+            ->where('paymentStatus' , '=', 'completed')
             ->whereRaw('WEEKOFYEAR(created_at) = WEEKOFYEAR(CURRENT_DATE())')
             ->sum('total');
 
         $annual = Bill::whereRaw('YEAR(created_at) = YEAR(CURRENT_DATE())')
+            ->where('paymentStatus' , '=', 'completed')
             ->sum('total');
 
         return Response()->json(['today' => $today, 'month' => $month, 'week' => $week, 'annual' => $annual]); 

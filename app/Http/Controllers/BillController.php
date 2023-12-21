@@ -64,7 +64,7 @@ class BillController extends Controller
         ->select('*', 'tables.tableName', 'bill.id as id')
         ->leftJoin('tables', 'tables.id', '=', 'bill.assignedTable')
         ->where('orderStatus', '<>', 'Completed')
-        ->where('paymentStatus', '<>', 'Completed')
+        ->orWhere('paymentStatus', '<>', 'Completed')
         ->get();
 
         return Response()->json($bill);

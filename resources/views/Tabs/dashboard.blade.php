@@ -120,7 +120,7 @@
                 data: null,
                 dataType: 'json',
                 success: function(response){
-                    console.log(response);
+                    //console.log(response);
                     $('#analytics_today').text('₱'+ response['today']);
                     $('#analytics_week').text('₱'+ response['week']);
                     $('#analytics_month').text('₱'+ response['month']);

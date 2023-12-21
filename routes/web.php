@@ -38,6 +38,8 @@ Route::controller(AccountController::class)->group(function(){
     Route::post('/account/login', 'login');
     Route::post('/account/logout', 'logout');
     Route::post('/account/update', 'update');
+    Route::post('/account/change-email', 'changeEmail')->name('account-change-email');
+    Route::post('/account/change-password', 'changePassword')->name('account-change-password');
 });
 
 Route::get('/inventory-management', function(){
