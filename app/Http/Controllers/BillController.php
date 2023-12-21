@@ -75,6 +75,7 @@ class BillController extends Controller
             'assignedAccount' => $request['accountID'],
             'assignedTable' => $request['tableID'],
             'total' => $request['total'],
+            'created_at' => now()->toDateString()
         ]);
 
         return Response()->json($bill);

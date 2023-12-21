@@ -60,8 +60,10 @@
                         @include('tabs.point-of-sale')
                     @elseif(request()->routeIS('ordersView'))
                         @include('tabs.orders-view')
-                    @else
+                    @elseif(request()->routeIS('dashboard'))
                         @include('tabs.dashboard')
+                    @else
+                        <script>window.location = "{{ route('dashboard') }}";</script>
                     @endif
                 </main>
             </div>

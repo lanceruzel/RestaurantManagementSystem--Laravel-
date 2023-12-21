@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuCategoryController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
@@ -98,3 +99,8 @@ Route::controller(BillController::class)->middleware('auth')->group(function(){
 Route::get('/orderView', function(){
     return view('index');
 })->name('ordersView');
+
+Route::controller(DashboardController::class)->middleware('auth')->group(function(){
+    Route::get('/dashboard', 'index')->name('dashboard');
+    Route::post('/dashboard', 'analytics')->name('dashboard-analytics');
+});

@@ -19,6 +19,7 @@ class Account extends Authenticatable
     protected $fillable = [
         'email',
         'password',
+        'created_at'
     ];
 
     protected $hidden = [

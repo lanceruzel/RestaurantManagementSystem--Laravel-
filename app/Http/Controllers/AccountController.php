@@ -91,7 +91,8 @@ class AccountController extends Controller
 
         $account = Account::create([
             'email' => $validated['email'],
-            'password' => $validated['password']
+            'password' => $validated['password'],
+            'created_at' => now()->toDateString()
         ]);
 
         $empInformation = EmployeeInformation::create([
@@ -133,5 +134,10 @@ class AccountController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    function getTime(){
+        date_default_timezone_set('Asia/Manila');
+        return date("Y-m-d");
     }
 }

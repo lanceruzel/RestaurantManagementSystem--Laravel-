@@ -20,5 +20,6 @@ class Bill extends Model
         'total',
         'orderStatus',
         'paymentStatus',
+        'created_at'
     ];
 }
