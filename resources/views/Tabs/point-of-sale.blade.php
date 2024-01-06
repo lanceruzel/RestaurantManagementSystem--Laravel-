@@ -107,7 +107,7 @@
             <div class="modal-body row" id="">
                 <div class="col-5 d-flex align-items-start flex-column overflow-y-scroll overflow-x-hidden" id="tableContainerOrderEdit" style="height: 500px"></div>
 
-                <div class="col-7">
+                <div class="col-7" id="view-order-right">
                     <div class="alert alert-info w-100 d-none" role="alert" id="orderViewAlert">
                         <span id="orderAlertMessage"></span>
                     </div>
@@ -308,9 +308,6 @@
     // Order Container
     const orderList = [];
     /////////////////////////////////////////////////////
-    function generatePDF(){
-
-    }
 
     function payout(){
         if($('#printReceiptBtn').hasClass('disabled')){
@@ -562,9 +559,14 @@
 
     function viewOrders(){
         $('#viewOrders_modal').modal('show');
-
         loadIncompleteOrders();
     }
+
+    $("#viewOrders_modal").on('hidden.bs.modal', function(){
+        $('#orderViewAlert').addClass('d-none');
+        $('#openBillBtn').addClass('d-none');
+        $('#editOrdersContainer').empty();
+    });
 
     function loadIncompleteOrders(){
         let orderViewList = '';
@@ -578,6 +580,7 @@
             dataType: 'json',
             data: null,
             success: function(response){
+
                 $.each(response, function (i, bill) {
                     const { tableName, availability, id, paymentStatus, orderStatus } = bill;
 
