@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 05, 2024 at 03:36 AM
+-- Generation Time: Jan 06, 2024 at 09:59 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -35,13 +35,6 @@ CREATE TABLE `account` (
   `created_at` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `account`
---
-
-INSERT INTO `account` (`id`, `email`, `password`, `role`, `created_at`) VALUES
-(22, 'lanceruzel1202@gmail.com', '$2y$12$rmqDHPyUYIoUtx14POcZpOBxhpx4KczEmx2Y.svND2yUO7CcRXDTa', 'Receptionist', '2023-12-17');
-
 -- --------------------------------------------------------
 
 --
@@ -57,18 +50,6 @@ CREATE TABLE `bill` (
   `paymentStatus` varchar(64) NOT NULL DEFAULT 'Pending',
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `bill`
---
-
-INSERT INTO `bill` (`id`, `assignedAccount`, `assignedTable`, `total`, `orderStatus`, `paymentStatus`, `created_at`) VALUES
-(84, 22, 20, 65, 'Completed', 'Completed', '2023-12-20 23:03:27'),
-(85, 22, 20, 66, 'Completed', 'Completed', '2023-12-20 23:07:30'),
-(86, 22, 20, 24, 'Completed', 'Completed', '2023-12-20 23:14:24'),
-(87, 22, 21, 64, 'Completed', 'Completed', '2023-12-20 23:17:02'),
-(88, 22, 20, 108, 'Completed', 'Completed', '2023-12-20 23:22:11'),
-(89, 22, 20, 24, 'Completed', 'Completed', '2023-12-21 16:49:07');
 
 -- --------------------------------------------------------
 
@@ -88,13 +69,6 @@ CREATE TABLE `employeeinformation` (
   `contact` varchar(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `employeeinformation`
---
-
-INSERT INTO `employeeinformation` (`id`, `accountID`, `firstName`, `middleName`, `lastName`, `birthdate`, `gender`, `address`, `contact`) VALUES
-(10, 22, 'Lance Ruzel', 'Caballes', 'Ambrocio', '2023-12-04', 'Male', 'Limay, Bataan', '09205524353');
-
 -- --------------------------------------------------------
 
 --
@@ -109,15 +83,6 @@ CREATE TABLE `menu` (
   `availability` varchar(24) NOT NULL DEFAULT 'Available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `menu`
---
-
-INSERT INTO `menu` (`id`, `categoryID`, `menuName`, `menuPrice`, `availability`) VALUES
-(6, 27, 'Menu 1', 1, 'Available'),
-(7, 25, 'Dessert 1', 2, 'Available'),
-(8, 25, 'Sisig', 21, 'Available');
-
 -- --------------------------------------------------------
 
 --
@@ -128,15 +93,6 @@ CREATE TABLE `menu_category` (
   `id` int(11) NOT NULL,
   `categoryName` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `menu_category`
---
-
-INSERT INTO `menu_category` (`id`, `categoryName`) VALUES
-(25, 'Appetaizer'),
-(27, 'Dessertt'),
-(28, 'Drinks');
 
 -- --------------------------------------------------------
 
@@ -153,28 +109,6 @@ CREATE TABLE `orders` (
   `total` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `orders`
---
-
-INSERT INTO `orders` (`id`, `billID`, `menuID`, `price`, `quantity`, `total`) VALUES
-(59, 84, 8, 21, 3, 63),
-(60, 84, 7, 2, 1, 2),
-(61, 85, 8, 21, 3, 63),
-(62, 85, 7, 2, 1, 2),
-(63, 85, 6, 1, 1, 1),
-(64, 86, 8, 21, 1, 21),
-(65, 86, 7, 2, 1, 2),
-(66, 86, 6, 1, 1, 1),
-(67, 87, 8, 21, 3, 63),
-(68, 87, 6, 1, 1, 1),
-(69, 88, 8, 21, 10, 105),
-(70, 88, 7, 2, 1, 2),
-(71, 88, 6, 1, 1, 1),
-(72, 89, 8, 21, 1, 21),
-(73, 89, 7, 2, 1, 2),
-(74, 89, 6, 1, 1, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -188,15 +122,6 @@ CREATE TABLE `tables` (
   `status` varchar(24) NOT NULL,
   `availability` varchar(24) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tables`
---
-
-INSERT INTO `tables` (`id`, `tableName`, `tableCapacity`, `status`, `availability`) VALUES
-(20, 'Table 22', 224, 'Active', 'Available'),
-(21, 'Tale Name', 22, 'Active', 'Available'),
-(22, 'Table 22', 23, 'Active', 'Available');
 
 --
 -- Indexes for dumped tables
@@ -213,8 +138,8 @@ ALTER TABLE `account`
 --
 ALTER TABLE `bill`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `aa1` (`assignedAccount`),
-  ADD KEY `aa2` (`assignedTable`);
+  ADD KEY `aa2` (`assignedTable`),
+  ADD KEY `aa1` (`assignedAccount`);
 
 --
 -- Indexes for table `employeeinformation`
@@ -258,43 +183,43 @@ ALTER TABLE `tables`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `bill`
 --
 ALTER TABLE `bill`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT for table `employeeinformation`
 --
 ALTER TABLE `employeeinformation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `menu_category`
 --
 ALTER TABLE `menu_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `tables`
 --
 ALTER TABLE `tables`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Constraints for dumped tables
@@ -317,7 +242,7 @@ ALTER TABLE `employeeinformation`
 -- Constraints for table `menu`
 --
 ALTER TABLE `menu`
-  ADD CONSTRAINT `Constraint 2` FOREIGN KEY (`categoryID`) REFERENCES `menu_category` (`id`) ON DELETE SET NULL ON UPDATE SET NULL;
+  ADD CONSTRAINT `Constraint 2` FOREIGN KEY (`categoryID`) REFERENCES `menu_category` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Constraints for table `orders`
