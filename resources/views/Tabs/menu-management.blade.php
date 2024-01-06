@@ -198,7 +198,7 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                 <form id="category_deleteForm" action="javascript:void(0)" method="POST">
-                    <button class="btn btn-primary" type="submit">Yes, Delete this category</button>
+                    <button class="btn btn-primary" id="destroyModelBtn" type="submit">Yes, Delete this category</button>
                 </form>
             </div>
         </div>
@@ -259,17 +259,15 @@
                 {data: 'menuName', name: 'menuName'},
                 {data: 'categoryName', name: 'categoryName'},
                 {data: 'menuPrice', name: 'menuPrice'},
-                {data: 'availability',
+                {data: 'availability', name: 'availability',
                     render: function(data, type, row, meta){
-                        if(type === 'display'){
-                            if(data === 'Available'){
-                                data = '<button type="button" class="btn btn-success btn-sm" style="pointer-events: none;">Available</button>';
-                            }else{
-                                data = '<button type="button" class="btn btn-danger btn-sm" style="pointer-events: none;">Unavailable</button>';
-                            }
-
-                            return data;
+                        if(data === 'Available'){
+                            data = '<button type="button" class="btn btn-success btn-sm" style="pointer-events: none;">Available</button>';
+                        }else{
+                            data = '<button type="button" class="btn btn-danger btn-sm" style="pointer-events: none;">Unavailable</button>';
                         }
+
+                        return data;
                     }
                 },
                 {data: 'action', name: 'action', orderable: false}
@@ -316,7 +314,7 @@
 
                 if(data['responseJSON'].errors.menuCategory){
                     menuCategoryField.addClass('is-invalid');
-                    menuSelectionInvalid.text(data['responseJSON'].errors.menuPrice[0]);
+                    menuSelectionInvalid.text(data['responseJSON'].errors.menuCategory[0]);
                 } 
             }
         });
@@ -442,8 +440,10 @@
 
         if(tableID === 'menu_table'){
             $('#deleteModal_message').text('Do you really want to delete this Menu?');
+            $('#destroyModelBtn').text('Yes, Delete this Menu');
         }else{
             $('#deleteModal_message').text('Do you really want to delete this Category?');
+            $('#destroyModelBtn').text('Yes, Delete this Category');
         }
 
         deleteModal.modal('show');
@@ -459,11 +459,13 @@
                 success: function(response){
                     deleteModal.modal('hide');
                     updateDataTable('#category_table');
-                    showAlert('success','Category has been successfully deleted.');
+                    
+                    showAlert('success', tableID === 'menu_table' ? 'Menu has been successfully deleted.' : 'Category has been successfully deleted.');
 
                     if(tableID === 'category_table'){
                         //reload category selection options
                         loadCategorySelectOptions();
+                    }else{
                         updateDataTable('#menu_table');
                     }
 

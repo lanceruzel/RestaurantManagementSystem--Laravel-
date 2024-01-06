@@ -164,7 +164,7 @@
     }).ajaxStop(function() {
         setTimeout(function(){
             loadingModal.modal('hide');
-        }, 300);
+        }, 350);
     });
 </script>
 

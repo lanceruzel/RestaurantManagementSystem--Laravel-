@@ -116,17 +116,15 @@
                 {data: 'totalFormatted', name: 'totatotalFormattedl'},
                 {data: 'orderStatus', 
                     render: function(data, type, row, meta){
-                        if(type === 'display'){
-                            if(data === 'Completed'){
-                                data = '<button type="button" class="btn btn-success btn-sm" style="pointer-events: none;">Completed</button>';
-                            }else if(data === 'Processing'){
-                                data = '<button type="button" class="btn btn-warning btn-sm" style="pointer-events: none;">Processing</button>';
-                            }else{
-                                data = '<button type="button" class="btn btn-secondary btn-sm" style="pointer-events: none;">Pending</button>';
-                            }
-
-                            return data;
+                        if(data === 'Completed'){
+                            data = '<button type="button" class="btn btn-success btn-sm" style="pointer-events: none;">Completed</button>';
+                        }else if(data === 'Processing'){
+                            data = '<button type="button" class="btn btn-warning btn-sm" style="pointer-events: none;">Processing</button>';
+                        }else{
+                            data = '<button type="button" class="btn btn-secondary btn-sm" style="pointer-events: none;">Pending</button>';
                         }
+
+                        return data;
                     }
                 },
                 {data: 'paymentStatus',
