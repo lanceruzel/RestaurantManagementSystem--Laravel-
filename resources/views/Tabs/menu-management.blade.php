@@ -259,7 +259,19 @@
                 {data: 'menuName', name: 'menuName'},
                 {data: 'categoryName', name: 'categoryName'},
                 {data: 'menuPrice', name: 'menuPrice'},
-                {data: 'availability', name: 'availability'},
+                {data: 'availability',
+                    render: function(data, type, row, meta){
+                        if(type === 'display'){
+                            if(data === 'Available'){
+                                data = '<button type="button" class="btn btn-success btn-sm" style="pointer-events: none;">Available</button>';
+                            }else{
+                                data = '<button type="button" class="btn btn-danger btn-sm" style="pointer-events: none;">Unavailable</button>';
+                            }
+
+                            return data;
+                        }
+                    }
+                },
                 {data: 'action', name: 'action', orderable: false}
             ],
             order:[[0, 'desc']]

@@ -58,11 +58,19 @@ class AccountController extends Controller
     }
 
     public function updateAccount(Request $request){
-        $validated = $request->validate([
-            "email" => ['required', 'min:3', Rule::unique('account', 'email')],
-            "role" => ['required'],
-        ]);
+        $validated = null;
 
+        if($request->email === Account::where('id', '=', $request->id)->value('email')){
+            $validated = $request->validate([
+                "role" => ['required'],
+            ]);
+        }else{
+            $validated = $request->validate([
+                "email" => ['required', 'min:3', Rule::unique('account', 'email')],
+                "role" => ['required'],
+            ]);
+        }
+        
         $information = Account::where('id', '=', $request->id)->update($validated);
 
         return Response()->json($information);

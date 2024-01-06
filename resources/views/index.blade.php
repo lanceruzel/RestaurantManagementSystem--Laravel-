@@ -52,8 +52,6 @@
                         @include('tabs.table-management')
                     @elseif(request()->routeIS('menu-management'))
                         @include('tabs.menu-management')
-                    @elseif(request()->routeIS('inventoryManagement'))
-                        @include('tabs.inventory-management')
                     @elseif(request()->routeIS('bill-management'))
                         @include('tabs.bill-management')
                     @elseif(request()->routeIS('pos'))

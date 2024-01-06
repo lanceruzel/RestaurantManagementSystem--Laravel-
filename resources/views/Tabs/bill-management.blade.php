@@ -52,7 +52,6 @@
     </div>
 </div>
 
-<!--Edit Modal-->
 <div class="modal fade" id="modal_billView" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -85,23 +84,6 @@
                             <td class="text-right">Total:</td>
                             <td class="text-center">₱<span id="totalPrice"></span></td>
                         </tr>
-
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td class="text-right">Payment:</td>
-                            <td>
-                                <input type="number" id="amountEntered" class="form-control text-center" placeholder="Amount" onchange="getChange();" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td class=" text-right">Change:
-                            </td>
-                            <td id="change" class="text-center">₱0.00</td>
-                        </tr>
                     </caption>
                 </table>
                     
@@ -109,7 +91,6 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary disabled" id="printReceiptBtn" onClick="payout()">Confirm Payment</button>
             </div>
         </div>
     </div>
@@ -117,7 +98,12 @@
 
 <script>
     $(document).ready(function() {
-        //bill data table
+        $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         $('#bill_table').DataTable({
             processing: true,
             serverSide: true,
@@ -128,8 +114,34 @@
                 {data: 'created_at', name: 'created_at'},
                 {data: 'fullname', name: 'fullname'},
                 {data: 'totalFormatted', name: 'totatotalFormattedl'},
-                {data: 'orderStatus', name: 'orderStatus'},
-                {data: 'paymentStatus', name: 'paymentStatus'},
+                {data: 'orderStatus', 
+                    render: function(data, type, row, meta){
+                        if(type === 'display'){
+                            if(data === 'Completed'){
+                                data = '<button type="button" class="btn btn-success btn-sm" style="pointer-events: none;">Completed</button>';
+                            }else if(data === 'Processing'){
+                                data = '<button type="button" class="btn btn-warning btn-sm" style="pointer-events: none;">Processing</button>';
+                            }else{
+                                data = '<button type="button" class="btn btn-secondary btn-sm" style="pointer-events: none;">Pending</button>';
+                            }
+
+                            return data;
+                        }
+                    }
+                },
+                {data: 'paymentStatus',
+                    render: function(data, type, row, meta){
+                        if(type === 'display'){
+                            if(data === 'Completed'){
+                                data = '<button type="button" class="btn btn-success btn-sm" style="pointer-events: none;">Completed</button>';
+                            }else{
+                                data = '<button type="button" class="btn btn-secondary btn-sm" style="pointer-events: none;">Pending</button>';
+                            }
+
+                            return data;
+                        }
+                    }
+                },
                 {data: 'action', name: 'action', orderable: false}
             ],
             order:[[0, 'desc']]
@@ -149,5 +161,48 @@
         }else{
             $('#change').css('color', '#858796');
         }
+    }
+
+    function showBill(selectedBillID){
+        let total = 0;
+        
+        let formData = new FormData();
+        formData.set('id', selectedBillID);
+
+        let orderViewList = '';
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ route('order-view') }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: (data) =>{
+                $('#modal_billView').modal('show');
+
+                $.each(data, function (i, bill) {
+                    const { id, menuName, price, quantity } = bill;
+
+                    let menuTotal = parseFloat(price) * parseFloat(quantity);
+                    total += menuTotal;
+
+                    const html = `<tr>
+                                    <td>${ menuName }</td>
+                                    <td class="text-center">₱${ price.toFixed(2) }</td>
+                                    <td class="text-center">x${ quantity }</td>
+                                    <td class="text-center">₱${ menuTotal.toFixed(2) }</td>
+                                </tr>`;
+
+                        orderViewList += html;
+                });
+
+                $('#totalPrice').text(total);
+                $("#billViewTableContainer").html(orderViewList);
+            },
+            error: (data) =>{
+                console.log(data);
+            }
+        });
     }
 </script>

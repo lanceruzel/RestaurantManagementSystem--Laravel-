@@ -14,7 +14,7 @@ class PosController extends Controller
 
     public function index(){
         $category = MenuCategory::all();
-        $menu = Menu::all();
+        $menu = Menu::where('availability', '<>', 'Unavailable')->get();
         return view('index', ['categoryList' => $category, 'menuList' => $menu]);
     }
 
