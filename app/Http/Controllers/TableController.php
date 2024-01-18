@@ -25,7 +25,7 @@ class TableController extends Controller
 
     public function store(Request $request){
         $validated = $request->validate([
-            "tableName" => ['required', 'min:3'],
+            "tableName" => ['required', 'min:3', 'unique:tables'],
             "tableCapacity" => ['required', 'min:1']
         ]);
 

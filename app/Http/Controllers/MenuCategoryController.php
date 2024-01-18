@@ -29,7 +29,7 @@ class MenuCategoryController extends Controller
 
     public function store(Request $request){
         $validated = $request->validate([
-            "categoryName" => ['required', 'min:3'],
+            "categoryName" => ['required', 'min:3', 'unique:menu_category'],
         ]);
 
         $category = MenuCategory::updateOrCreate(

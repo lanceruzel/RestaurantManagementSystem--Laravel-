@@ -111,14 +111,14 @@
     <div class="modal-dialog modal-dialog-scrollable" role="document" style="min-width: 550px !important;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">View Categories</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Category</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
 
             <div class="modal-body">
-                <div class="py-3 d-flex justify-content-between align-items-center">
+                <div class="pb-3 d-flex justify-content-between align-items-center">
                     <h5 class="m-0 font-weight-bold text-primary">Category List</h6>
             
                     <div>

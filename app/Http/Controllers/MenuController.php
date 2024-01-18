@@ -29,7 +29,7 @@ class MenuController extends Controller
 
     public function store(Request $request){
         $validated = $request->validate([
-            "menuName" => ['required', 'min:3'],
+            "menuName" => ['required', 'min:3', 'unique:menu'],
             "menuPrice" => ['required'],
             "menuCategory" => ['required'],
         ]);

@@ -9,7 +9,7 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h5 class="m-0 font-weight-bold text-primary">Table List</h6>
         <button class="btn btn-primary" data-mode="add-table" onClick="add()">
-            <strong>+</strong> Add Menu
+            <strong>+</strong> Add Table
         </button>
     </div>
     <div class="card-body">
