@@ -29,19 +29,34 @@ class MenuController extends Controller
 
     public function store(Request $request){
         $validated = $request->validate([
-            "menuName" => ['required', 'min:3', 'unique:menu'],
+            "menuName" => ['required', 'min:3'],
             "menuPrice" => ['required'],
             "menuCategory" => ['required'],
         ]);
-        
+
+        $checkMenuName = Menu::where('menuName', $validated['menuName'])
+                            ->where('id', '<>', $request->id)
+                            ->first();
+
+        if ($checkMenuName) {
+            return response()->json(['errors' => ['menuName' => ['Menu name is already taken.']]], 422);
+        }
+
         $menu = Menu::updateOrCreate(
             ['id' => $request->id],
-            ['categoryID' => $validated['menuCategory'],
-            'menuName' => $validated['menuName'],
-            'menuPrice' => $request['menuPrice'],
-            'availability' => $request->availability]);
+            [
+                'categoryID' => $validated['menuCategory'],
+                'menuPrice' => $request['menuPrice'],
+                'availability' => $request->availability,
+                'menuName' => $validated['menuName'],
+            ]
+        );
 
-        return Response()->json($menu);
+        if ($request->id && $menu->wasChanged('menuName')) {
+            $menu->update(['menuName' => $validated['menuName']]);
+        }
+
+        return response()->json($menu);
     }
 
     public function edit(Request $request){
