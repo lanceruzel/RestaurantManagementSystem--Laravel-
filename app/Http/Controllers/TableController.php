@@ -25,18 +25,32 @@ class TableController extends Controller
 
     public function store(Request $request){
         $validated = $request->validate([
-            "tableName" => ['required', 'min:3', 'unique:tables'],
+            "tableName" => ['required', 'min:3'],
             "tableCapacity" => ['required', 'min:1']
         ]);
 
+        $existingTable = Table::where('tableName', $validated['tableName'])
+                            ->where(function ($query) use ($request) {
+                                $query->where('id', '<>', $request->id)
+                                        ->orWhereNull('id');
+                            })
+                            ->first();
+
+        if ($existingTable) {
+            return response()->json(['errors' => ['tableName' => ['Table name is already taken.']]], 422);
+        }
+
         $table = Table::updateOrCreate(
             ['id' => $request->id],
-            ['tableName' => $validated['tableName'],
-            'tableCapacity' => $validated['tableCapacity'],
-            'status' => $request->status,
-            'availability' => $request->availability]);
+            [
+                'tableName' => $validated['tableName'],
+                'tableCapacity' => $validated['tableCapacity'],
+                'status' => $request->status,
+                'availability' => $request->availability
+            ]
+        );
 
-        return Response()->json($table);
+        return response()->json($table);
     }
 
     public function edit(Request $request){

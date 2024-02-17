@@ -6,7 +6,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-utensils"></i>
         </div>
-        <div class="sidebar-brand-text mx-3" style="line-height: 1rem">AARC RMS</div>
+        <div class="sidebar-brand-text mx-3" style="line-height: 1rem">RMS</div>
     </a>
 
     <!-- Divider -->
@@ -31,13 +31,6 @@
         <a class="nav-link" href="{{ route('menu-management') }}">
         <i class="fas fa-fw fa-utensil-spoon"></i>
         <span>Menu Management</span></a>
-    </li>
-
-    <!-- Nav Item - Menu Management -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-        <i class="fas fa-fw fa-utensil-spoon"></i>
-        <span>Inventory Management</span></a>
     </li>
 
     <!-- Nav Item - Table Management -->

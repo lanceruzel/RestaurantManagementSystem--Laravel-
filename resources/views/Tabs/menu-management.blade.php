@@ -258,7 +258,10 @@
             columns:[
                 {data: 'menuName', name: 'menuName'},
                 {data: 'categoryName', name: 'categoryName'},
-                {data: 'menuPrice', name: 'menuPrice'},
+                {data: 'menuPrice', render: function(data, type, row, meta){
+                        return `₱${data}`;
+                    }
+                },
                 {data: 'availability', name: 'availability',
                     render: function(data, type, row, meta){
                         if(data === 'Available'){

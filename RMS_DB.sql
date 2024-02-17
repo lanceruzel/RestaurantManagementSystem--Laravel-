@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 06, 2024 at 03:02 PM
+-- Generation Time: Jan 25, 2024 at 09:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -72,6 +72,19 @@ CREATE TABLE `employeeinformation` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `inventory`
+--
+
+CREATE TABLE `inventory` (
+  `id` int(11) NOT NULL,
+  `name` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `menu`
 --
 
@@ -83,6 +96,25 @@ CREATE TABLE `menu` (
   `availability` varchar(24) NOT NULL DEFAULT 'Available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `menu`
+--
+
+INSERT INTO `menu` (`id`, `categoryID`, `menuName`, `menuPrice`, `availability`) VALUES
+(29, 34, 'Cheese Burger', 150, 'Available'),
+(30, 34, 'Cheese Sandwich', 150, 'Available'),
+(31, 34, 'Chicken Burger', 185, 'Available'),
+(32, 34, 'Spicy Burger', 250, 'Available'),
+(33, 34, 'Chicken Wings', 250, 'Available'),
+(34, 37, 'French Fries', 100, 'Available'),
+(35, 37, 'Chicken Nuggets', 125, 'Available'),
+(36, 37, 'Ice Cream', 150, 'Available'),
+(37, 37, 'Cheese Cake', 140, 'Available'),
+(38, 38, 'Green Tea', 100, 'Available'),
+(39, 38, 'Iced Chocolate', 120, 'Available'),
+(40, 38, 'Lemon Tea', 80, 'Available'),
+(41, 38, 'Avocado Juice', 130, 'Available');
+
 -- --------------------------------------------------------
 
 --
@@ -93,6 +125,15 @@ CREATE TABLE `menu_category` (
   `id` int(11) NOT NULL,
   `categoryName` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `menu_category`
+--
+
+INSERT INTO `menu_category` (`id`, `categoryName`) VALUES
+(34, 'Main Course'),
+(37, 'Appetizer'),
+(38, 'Drinks');
 
 -- --------------------------------------------------------
 
@@ -122,6 +163,17 @@ CREATE TABLE `tables` (
   `status` varchar(24) NOT NULL,
   `availability` varchar(24) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tables`
+--
+
+INSERT INTO `tables` (`id`, `tableName`, `tableCapacity`, `status`, `availability`) VALUES
+(33, 'Table 1', 2, 'Active', 'Available'),
+(34, 'Table 2', 4, 'Active', 'Available'),
+(35, 'Table 3', 2, 'Active', 'Available'),
+(36, 'Table 4', 5, 'Active', 'Available'),
+(37, 'Table 5', 3, 'Active', 'Available');
 
 --
 -- Indexes for dumped tables
@@ -183,43 +235,43 @@ ALTER TABLE `tables`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `bill`
 --
 ALTER TABLE `bill`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT for table `employeeinformation`
 --
 ALTER TABLE `employeeinformation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `menu_category`
 --
 ALTER TABLE `menu_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
 
 --
 -- AUTO_INCREMENT for table `tables`
 --
 ALTER TABLE `tables`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- Constraints for dumped tables
